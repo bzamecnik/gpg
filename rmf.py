@@ -85,16 +85,26 @@ def testDoubleReflection():
         print rm_frames[i]
         drawFrameAxes(points[i], rm_frames[i])
 
-def testSampleCurve():
-    sin_normalized = lambda t: math.sin(math.pi * t)
-    cos_normalized = lambda t: math.cos(math.pi * t)
-    curve_3d = lambda t: vector(5 * t, 5 * sin_normalized(t), 5 * cos_normalized(t))
-    (points, tangents) = sampleCurve(curve_3d, 10)
-    print points
-    print tangents
-    visual.points(pos=points, size=5, color=visual.color.red)
-    for i in range(0, len(tangents)):
-        visual.arrow(pos=points[i], axis=tangents[i], shaftwidth=0.05)
+def helix(twistsCount, radius):
+    s = lambda t: math.sin(twistsCount * 2 * math.pi * t)
+    c = lambda t: math.cos(twistsCount * 2 * math.pi * t)
+    return lambda t: vector(radius * t, radius * s(t), radius * c(t))
 
-testSampleCurve()
+def testSampleCurve(samples):
+    # sample the curve
+    (points, tangents) = sampleCurve(helix(2, 4), samples)
+    # compute the rotation minimization frames
+    initFrame = Frame(vector(0,0,-1), tangents[0])
+    rm_frames = doubleReflection(points, tangents, initFrame)
+    assert(len(points) == len(rm_frames))
+    # display the results
+    #print points
+    #print tangents
+    visual.points(pos=points, size=10, color=visual.color.red)
+    for i in range(0, len(points)):
+        #print rm_frames[i]
+        drawFrameAxes(points[i], rm_frames[i])
+
 drawFrameAxes((0,0,0), Frame(vector(0,1,0), vector(1,0,0)))
+testSampleCurve(100)
+
