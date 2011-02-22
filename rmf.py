@@ -34,6 +34,12 @@ def drawFrameAxes(position, frame):
 def drawFrameProfiles(position, frame):
     visual.box(pos=position, axis=frame.t, up=frame.r, length=0.1, color=visual.color.yellow)
 
+def drawFrames(points, frames):
+    visual.points(pos=points, size=5, color=visual.color.red)
+    for i in range(0, len(points)):
+        drawFrameAxes(points[i], frames[i])
+        drawFrameProfiles(points[i], frames[i])
+
 # Compute rotation minimizing frames for a set of points and associated
 # tangent vector using the double reflection method.
 #
@@ -102,6 +108,69 @@ def sampleCurve(curve, sampleCount):
     tangents.append(visual.norm(curve(t) - last_point))
     return (points, tangents, parameterValues)
 
+# Create a surface from a sequence of extruded profile vertices.
+# Several square faces connect consecutive profiles.
+# Optionally end caps can be created.
+# The profile is assumed to be square (for the caps).
+#
+# Parameters:
+#
+# vertices: [((x,y,z), (x,y,z), ..., ...), (...)]
+#   the list contains profile tuples, each containing a tuple of vertices
+#
+#
+# fillEnds: (true/false) indicates whether to create end caps
+def makeFaces(vertices, fillEnds=False):
+    f = visual.faces(color=(1,1,1))
+    # one end
+    if (fillEnds):
+        f.append(pos = vertices[0][0])
+        f.append(pos = vertices[0][1])
+        f.append(pos = vertices[0][2])
+        f.append(pos = vertices[0][0])
+        f.append(pos = vertices[0][2])
+        f.append(pos = vertices[0][3])
+    for i in range(0, len(vertices) - 1):
+        profile = vertices[i]
+        profile_len = len(profile)
+        next_profile = vertices[i+1]
+        for j in range(0, profile_len):
+            # two triangles to make a square
+            f.append(pos = profile[j % profile_len])
+            f.append(pos = next_profile[j % profile_len])
+            f.append(pos = next_profile[(j+1) % profile_len])
+            f.append(pos = profile[j % profile_len])
+            f.append(pos = next_profile[(j+1) % profile_len])
+            f.append(pos = profile[(j+1) % profile_len])
+    # another end
+    if (fillEnds):
+        f.append(pos = vertices[-1][0])
+        f.append(pos = vertices[-1][2])
+        f.append(pos = vertices[-1][1])
+        f.append(pos = vertices[-1][0])
+        f.append(pos = vertices[-1][3])
+        f.append(pos = vertices[-1][2])
+    f.make_normals()
+    return f
+
+# Make a sweep surface by sweeping a square profile along a curve
+# with sampled points and given frames.
+def makeSweepSurface(points, frames, width=1.0):
+    profiles = []
+    for i in range(0, len(points)):
+        point = points[i]
+        frame = frames[i]
+        r = 0.5 * width * frame.r
+        s = 0.5 * width * frame.s
+        profile = (
+            point - r - s,
+            point - r + s,
+            point + r + s,
+            point + r - s
+            )
+        profiles.append(profile)
+    return makeFaces(profiles, True)
+
 def testDoubleReflection():
     points = [vector(-1,0,0), vector(0,0,0), vector(1,0,0)]
     tangents = [vector(1,0.5,0.5), vector(1,0,0), vector(1,-0.5,-0.5)]
@@ -130,7 +199,7 @@ def circle(radius):
         radius * math.cos(2 * math.pi * t),
         )
 
-def testSampleCurve(curve, sampleCount):
+def testSampleCurve(curve, sampleCount, showSweepSurface=True):
     # sample the curve
     (points, tangents, parameterValues) = sampleCurve(curve, sampleCount)
     # compute the rotation minimization frames
@@ -149,15 +218,11 @@ def testSampleCurve(curve, sampleCount):
     frames = adjusted_frames
     
     # display the results
-    #print points
-    #print tangents
-    visual.points(pos=points, size=5, color=visual.color.red)
-    for i in range(0, len(points)):
-        #print frames[i]
-        drawFrameAxes(points[i], adjusted_frames[i])
-        drawFrameProfiles(points[i], adjusted_frames[i])
+    drawFrames(points, frames)
+    if (showSweepSurface):
+        makeSweepSurface(points, frames, 0.9)
 
 drawFrameAxes((0,0,0), Frame(vector(0,1,0), vector(1,0,0)))
-#testSampleCurve(helix(2, 4, 8), 100)
+testSampleCurve(helix(2, 4, 8), 100)
 #testSampleCurve(table_bottom(5, 5, 1), 100)
-testSampleCurve(circle(5), 100)
+#testSampleCurve(circle(5), 5)
