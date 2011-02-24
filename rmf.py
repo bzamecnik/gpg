@@ -18,10 +18,18 @@ from visual import vector
 #   r = reference (normal)
 #   t = tangent
 #   s = bitangent (s = t x r)
+#
+# The reference vector is projected so that it is made orthogonal to the
+# tangent vector. The bitangent vector is made orthogonal to the others.
+# All vectors are then normalized. This is one step of the Gram-Schmidt
+# orthogonalization.
 class Frame(object):
     def __init__(self, reference, tangent):
-        self.r = visual.norm(reference)
         self.t = visual.norm(tangent)
+        # make reference vector orthogonal to tangent
+        proj_r_to_t = reference.dot(tangent) / tangent.dot(tangent) * tangent
+        self.r = visual.norm(reference - proj_r_to_t)
+        # make bitangent vector orthogonal to the others
         self.s = visual.norm(self.t.cross(self.r))
     
     def __str__(self):
@@ -272,11 +280,11 @@ def runDemo():
     #curve = table_bottom(5, 5, 1)
     #curve = circle(5)
     sampleCount = 50
-    boundaryConditions = (vector(0,0,1), vector(0,0,-1))
+    boundaryConditions = (vector(0,1,-1), vector(0,0,1))
     #boundaryConditions = (vector(0,0,-1), vector(0,0,1))
     adjustmentFunc = lambda maxAngle: squareAngularSpeedMinimizationFunc(maxAngle, twistCount=0)
-    adjustFrames = False
-    showSweepSurface = False
+    adjustFrames = True
+    showSweepSurface = True
     showFrames = True
 
     testComputeRMF(curve, sampleCount, boundaryConditions, adjustFrames=adjustFrames, adjustmentFunc=adjustmentFunc, showSweepSurface=showSweepSurface, showFrames=showFrames)
