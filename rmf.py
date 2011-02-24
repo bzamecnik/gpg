@@ -1,6 +1,18 @@
 import time, math, visual
 from visual import vector
 
+# Computing rotation minimization frames using the double reflection method
+#
+# Author: Bohumir Zamecnik <bohumir [dot] zamecnik [at] gmail [dot] com>
+# Date: 2011/02/24
+#
+# References:
+# [1] W. Wang, B. Juttler, D. Zheng, Y. Liu: Computation of Rotation Minimizing
+#     Frame in Computer Graphics, 2007
+# 
+
+# ----- Frame computation -----
+
 # Moving frame.
 # A right-handed orthonormal system containing three orthogonal unit vectors:
 #   r = reference (normal)
@@ -25,20 +37,6 @@ class Frame(object):
     # Rotate the frame around the t axis by a specified angle.
     def rotate_t(self, angle):
         return Frame(self.r.rotate(angle, self.t), self.t)
-
-def drawFrameAxes(position, frame):
-    visual.arrow(pos=position, axis=frame.t, shaftwidth=0.05, color=visual.color.blue)
-    visual.arrow(pos=position, axis=frame.s, shaftwidth=0.05)
-    visual.arrow(pos=position, axis=frame.r, shaftwidth=0.05, color=visual.color.red)
-
-def drawFrameProfiles(position, frame):
-    visual.box(pos=position, axis=frame.t, up=frame.r, length=0.1, color=visual.color.yellow)
-
-def drawFrames(points, frames):
-    visual.points(pos=points, size=5, color=visual.color.red)
-    for i in range(0, len(points)):
-        drawFrameAxes(points[i], frames[i])
-        drawFrameProfiles(points[i], frames[i])
 
 # Compute rotation minimizing frames for a set of points and associated
 # tangent vector using the double reflection method.
@@ -78,12 +76,46 @@ def rotateFrames(frames, parameterValues, rotationFunc):
         rotatedFrames.append(frame)
     return rotatedFrames
 
-def squareAngularSpeedMinimizationFunc(maxAngle, twistsCount):
-    return lambda t: t * (maxAngle + twistsCount * 2 * math.pi)
+def squareAngularSpeedMinimizationFunc(maxAngle, twistCount):
+    return lambda t: t * (maxAngle + twistCount * 2 * math.pi)
+
+def adjustFramesWithBoundaryCondition(frames, firstFrame, lastFrame, parameterValues, adjustmentFunc):
+    maxAngle = -(frames[-1].diff_angle_t(lastFrame))
+    #print("last RMF: " + str(rm_frames[-1]))
+    #print("last frame BC: " + str(lastFrame))
+    #print("angle diff: " + str(maxAngle))
+    adjusted_frames = rotateFrames(frames, parameterValues, adjustmentFunc(maxAngle))
+    return adjusted_frames
+
+# Sample a curve and compute rotation minimization frames in each sampled point.
+#
+# curve: curve to be sampled; lambda function parametrized by one parameter
+# sampleCount: number of sample points of the curve
+# boundaryConditions: boundary conditions on the frames
+#   Currently only first and last frame can be specified. The first 
+
+def computeRMF(curve, sampleCount, boundaryConditions, adjustFrames=True, adjustmentFunc=None):
+    # sample the curve
+    (points, tangents, parameterValues) = sampleCurve(curve, sampleCount)
+    # compute the rotation minimization frames
+    firstFrame = Frame(boundaryConditions[0], tangents[0])
+    rm_frames = doubleReflection(points, tangents, firstFrame)
+    assert(len(points) == len(rm_frames))
+    frames = rm_frames
+    if adjustFrames:
+        assert(adjustFrames and (len(boundaryConditions) > 1))
+        lastFrame = Frame(boundaryConditions[1], tangents[-1])
+        # adjust (rotate) frames to meet the boundary conditions
+        frames = adjustFramesWithBoundaryCondition(rm_frames, firstFrame, lastFrame, parameterValues, adjustmentFunc)
+    return (points, frames)
+
+# ----- Curve sampling -----
 
 # Sample a curve in parametric space inside interval [0; 1].
 # In addition compute tangents to sampled points of a curve along the curve
 # parameter. Approximate the partial derivative by a simple difference.
+#
+# curve: curve to be sampled; lambda function parametrized by one parameter
 # sampleCount: number of sample points
 # return: tuple of list of points and tangents
 def sampleCurve(curve, sampleCount):
@@ -107,6 +139,28 @@ def sampleCurve(curve, sampleCount):
     t += step
     tangents.append(visual.norm(curve(t) - last_point))
     return (points, tangents, parameterValues)
+
+# ---- Example curves -----
+
+def helix(twistsCount, radius, pitch):
+    s = lambda t: math.sin(twistsCount * 2 * math.pi * t)
+    c = lambda t: math.cos(twistsCount * 2 * math.pi * t)
+    return lambda t: vector(radius * s(t), pitch * (t - 0.5), radius * c(t))
+
+def table_bottom(radius, legsCount, height):
+    y = lambda t: height * math.sin(legsCount * 2 * math.pi * t)
+    s = lambda t: math.sin(2 * math.pi * t)
+    c = lambda t: math.cos(2 * math.pi * t)
+    return lambda t: vector(radius * s(t), y(t), radius * c(t))
+
+def circle(radius):
+    return lambda t: vector(
+        radius * math.sin(2 * math.pi * t),
+        0,
+        radius * math.cos(2 * math.pi * t),
+        )
+
+# ---- Visualization routines -----
 
 # Create a surface from a sequence of extruded profile vertices.
 # Several square faces connect consecutive profiles.
@@ -171,6 +225,25 @@ def makeSweepSurface(points, frames, width=1.0):
         profiles.append(profile)
     return makeFaces(profiles, True)
 
+# Draw axes of a frames as color-coded arrows.
+def drawFrameAxes(position, frame):
+    visual.arrow(pos=position, axis=frame.t, shaftwidth=0.05, color=visual.color.blue)
+    visual.arrow(pos=position, axis=frame.s, shaftwidth=0.05)
+    visual.arrow(pos=position, axis=frame.r, shaftwidth=0.05, color=visual.color.red)
+
+# Draw normal planes of a list of frames as squares.
+def drawFrameProfiles(position, frame):
+    visual.box(pos=position, axis=frame.t, up=frame.r, length=0.1, color=visual.color.yellow, opacity=0.5)
+
+# Draw a list of frames located at specified positions.
+def drawFrames(points, frames):
+    visual.points(pos=points, size=5, color=visual.color.red)
+    for i in range(0, len(points)):
+        drawFrameAxes(points[i], frames[i])
+        drawFrameProfiles(points[i], frames[i])
+
+# ----- Tests -----
+
 def testDoubleReflection():
     points = [vector(-1,0,0), vector(0,0,0), vector(1,0,0)]
     tangents = [vector(1,0.5,0.5), vector(1,0,0), vector(1,-0.5,-0.5)]
@@ -181,48 +254,31 @@ def testDoubleReflection():
         print rm_frames[i]
         drawFrameAxes(points[i], rm_frames[i])
 
-def helix(twistsCount, radius, pitch):
-    s = lambda t: math.sin(twistsCount * 2 * math.pi * t)
-    c = lambda t: math.cos(twistsCount * 2 * math.pi * t)
-    return lambda t: vector(radius * s(t), pitch * (t - 0.5), radius * c(t))
-
-def table_bottom(radius, legsCount, height):
-    y = lambda t: height * math.sin(legsCount * 2 * math.pi * t)
-    s = lambda t: math.sin(2 * math.pi * t)
-    c = lambda t: math.cos(2 * math.pi * t)
-    return lambda t: vector(radius * s(t), y(t), radius * c(t))
-
-def circle(radius):
-    return lambda t: vector(
-        radius * math.sin(2 * math.pi * t),
-        0,
-        radius * math.cos(2 * math.pi * t),
-        )
-
-def testSampleCurve(curve, sampleCount, showSweepSurface=True):
-    # sample the curve
-    (points, tangents, parameterValues) = sampleCurve(curve, sampleCount)
-    # compute the rotation minimization frames
-    firstFrame = Frame(vector(0,0,-1), tangents[0])
-    lastFrame = Frame(vector(0,0,1), tangents[-1])
-    rm_frames = doubleReflection(points, tangents, firstFrame)
-    assert(len(points) == len(rm_frames))
-
-    maxAngle = -(rm_frames[-1].diff_angle_t(lastFrame))
-    print("last RMF: " + str(rm_frames[-1]))
-    print("last frame BC: " + str(lastFrame))
-    print("angle diff: " + str(maxAngle))
-    adjusted_frames = rotateFrames(rm_frames, parameterValues,
-        squareAngularSpeedMinimizationFunc(maxAngle, 1))
-    #frames = rm_frames
-    frames = adjusted_frames
-    
+def testComputeRMF(curve, sampleCount, boundaryConditions, adjustFrames=True, adjustmentFunc=None, showSweepSurface=True, showFrames=True):
+    (points, frames) = computeRMF(curve, sampleCount, boundaryConditions, adjustFrames, adjustmentFunc)
     # display the results
-    drawFrames(points, frames)
-    if (showSweepSurface):
+    if showFrames:
+        drawFrames(points, frames)
+    if showSweepSurface:
         makeSweepSurface(points, frames, 0.9)
 
-drawFrameAxes((0,0,0), Frame(vector(0,1,0), vector(1,0,0)))
-testSampleCurve(helix(2, 4, 8), 100)
-#testSampleCurve(table_bottom(5, 5, 1), 100)
-#testSampleCurve(circle(5), 5)
+# ----- Demo -----
+
+def runDemo():
+    # draw the frame of world coordinates
+    drawFrameAxes((0,0,0), Frame(vector(0,1,0), vector(1,0,0)))
+
+    curve = helix(2, 4, 8)
+    #curve = table_bottom(5, 5, 1)
+    #curve = circle(5)
+    sampleCount = 50
+    boundaryConditions = (vector(0,0,1), vector(0,0,-1))
+    #boundaryConditions = (vector(0,0,-1), vector(0,0,1))
+    adjustmentFunc = lambda maxAngle: squareAngularSpeedMinimizationFunc(maxAngle, twistCount=0)
+    adjustFrames = False
+    showSweepSurface = False
+    showFrames = True
+
+    testComputeRMF(curve, sampleCount, boundaryConditions, adjustFrames=adjustFrames, adjustmentFunc=adjustmentFunc, showSweepSurface=showSweepSurface, showFrames=showFrames)
+
+runDemo()
