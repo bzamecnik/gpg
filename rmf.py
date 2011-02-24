@@ -87,12 +87,14 @@ def rotateFrames(frames, parameterValues, rotationFunc):
 def squareAngularSpeedMinimizationFunc(maxAngle, twistCount):
     return lambda t: t * (maxAngle + twistCount * 2 * math.pi)
 
-def adjustFramesWithBoundaryCondition(frames, firstFrame, lastFrame, parameterValues, adjustmentFunc):
+def adjustFramesWithBoundaryCondition(frames, firstFrame, lastFrame,
+        parameterValues, adjustmentFunc):
     maxAngle = -(frames[-1].diff_angle_t(lastFrame))
     #print("last RMF: " + str(rm_frames[-1]))
     #print("last frame BC: " + str(lastFrame))
     #print("angle diff: " + str(maxAngle))
-    adjusted_frames = rotateFrames(frames, parameterValues, adjustmentFunc(maxAngle))
+    adjusted_frames = rotateFrames(frames, parameterValues,
+        adjustmentFunc(maxAngle))
     return adjusted_frames
 
 # Sample a curve and compute rotation minimization frames in each sampled point.
@@ -102,7 +104,8 @@ def adjustFramesWithBoundaryCondition(frames, firstFrame, lastFrame, parameterVa
 # boundaryConditions: boundary conditions on the frames
 #   Currently only first and last frame can be specified. The first 
 
-def computeRMF(curve, sampleCount, boundaryConditions, adjustFrames=True, adjustmentFunc=None):
+def computeRMF(curve, sampleCount, boundaryConditions, adjustFrames=True,
+        adjustmentFunc=None):
     # sample the curve
     (points, tangents, parameterValues) = sampleCurve(curve, sampleCount)
     # compute the rotation minimization frames
@@ -147,26 +150,6 @@ def sampleCurve(curve, sampleCount):
     t += step
     tangents.append(visual.norm(curve(t) - last_point))
     return (points, tangents, parameterValues)
-
-# ---- Example curves -----
-
-def helix(twistsCount, radius, pitch):
-    s = lambda t: math.sin(twistsCount * 2 * math.pi * t)
-    c = lambda t: math.cos(twistsCount * 2 * math.pi * t)
-    return lambda t: vector(radius * s(t), pitch * (t - 0.5), radius * c(t))
-
-def table_bottom(radius, legsCount, height):
-    y = lambda t: height * math.sin(legsCount * 2 * math.pi * t)
-    s = lambda t: math.sin(2 * math.pi * t)
-    c = lambda t: math.cos(2 * math.pi * t)
-    return lambda t: vector(radius * s(t), y(t), radius * c(t))
-
-def circle(radius):
-    return lambda t: vector(
-        radius * math.sin(2 * math.pi * t),
-        0,
-        radius * math.cos(2 * math.pi * t),
-        )
 
 # ---- Visualization routines -----
 
@@ -235,13 +218,16 @@ def makeSweepSurface(points, frames, width=1.0):
 
 # Draw axes of a frames as color-coded arrows.
 def drawFrameAxes(position, frame):
-    visual.arrow(pos=position, axis=frame.t, shaftwidth=0.05, color=visual.color.blue)
+    visual.arrow(pos=position, axis=frame.t, shaftwidth=0.05,
+        color=visual.color.blue)
     visual.arrow(pos=position, axis=frame.s, shaftwidth=0.05)
-    visual.arrow(pos=position, axis=frame.r, shaftwidth=0.05, color=visual.color.red)
+    visual.arrow(pos=position, axis=frame.r, shaftwidth=0.05,
+        color=visual.color.red)
 
 # Draw normal planes of a list of frames as squares.
 def drawFrameProfiles(position, frame):
-    visual.box(pos=position, axis=frame.t, up=frame.r, length=0.1, color=visual.color.yellow, opacity=0.5)
+    visual.box(pos=position, axis=frame.t, up=frame.r, length=0.1,
+        color=visual.color.yellow, opacity=0.5)
 
 # Draw a list of frames located at specified positions.
 def drawFrames(points, frames):
@@ -250,43 +236,163 @@ def drawFrames(points, frames):
         drawFrameAxes(points[i], frames[i])
         drawFrameProfiles(points[i], frames[i])
 
-# ----- Tests -----
+def setWindow(width, height):
+    visual.scene.visible = False
+    visual.scene.width = width
+    visual.scene.height = height
+    visual.scene.visible = True
 
-def testDoubleReflection():
-    points = [vector(-1,0,0), vector(0,0,0), vector(1,0,0)]
-    tangents = [vector(1,0.5,0.5), vector(1,0,0), vector(1,-0.5,-0.5)]
-    initFrame = Frame(vector(0,0,1), tangents[0])
-    rm_frames = doubleReflection(points, tangents, initFrame)
-    assert(len(points) == len(rm_frames))
-    for i in range(0, len(points)):
-        print rm_frames[i]
-        drawFrameAxes(points[i], rm_frames[i])
-
-def testComputeRMF(curve, sampleCount, boundaryConditions, adjustFrames=True, adjustmentFunc=None, showSweepSurface=True, showFrames=True):
-    (points, frames) = computeRMF(curve, sampleCount, boundaryConditions, adjustFrames, adjustmentFunc)
-    # display the results
-    if showFrames:
-        drawFrames(points, frames)
-    if showSweepSurface:
-        makeSweepSurface(points, frames, 0.9)
+def clearScene():
+    scene = visual.display.get_selected()
+    for obj in scene.objects:
+        obj.visible = False
+        del obj
 
 # ----- Demo -----
 
-def runDemo():
-    # draw the frame of world coordinates
-    drawFrameAxes((0,0,0), Frame(vector(0,1,0), vector(1,0,0)))
+class Demo(object):
+    def  __init__(self):
+        self.exampleCurves = [
+            self.helix(2, 4, 8),
+            self.table_bottom(5, 5, 1),
+            self.circle(5),
+            ]
+        self.curve = self.exampleCurves[0]
+        self.sampleCount = 50
+        self.boundaryConditions = (vector(0,1,-1), vector(0,0,1))
+        #self.boundaryConditions = (vector(0,0,-1), vector(0,0,1))
+        self.twistCount = 0
+        self.adjustmentFunc = lambda maxAngle: squareAngularSpeedMinimizationFunc(
+            maxAngle, twistCount=self.twistCount)
+        self.adjustFrames = True
+        self.showSweepSurface = True
+        self.showFrames = True
+        self.showWorldFrame = True
+        
+        self.sampleCountIncreaseFactor = 0.75
 
-    curve = helix(2, 4, 8)
-    #curve = table_bottom(5, 5, 1)
-    #curve = circle(5)
-    sampleCount = 50
-    boundaryConditions = (vector(0,1,-1), vector(0,0,1))
-    #boundaryConditions = (vector(0,0,-1), vector(0,0,1))
-    adjustmentFunc = lambda maxAngle: squareAngularSpeedMinimizationFunc(maxAngle, twistCount=0)
-    adjustFrames = True
-    showSweepSurface = True
-    showFrames = True
+    # ---- Example curves -----
 
-    testComputeRMF(curve, sampleCount, boundaryConditions, adjustFrames=adjustFrames, adjustmentFunc=adjustmentFunc, showSweepSurface=showSweepSurface, showFrames=showFrames)
+    def helix(self, twistsCount, radius, pitch):
+        s = lambda t: math.sin(twistsCount * 2 * math.pi * t)
+        c = lambda t: math.cos(twistsCount * 2 * math.pi * t)
+        return lambda t: vector(radius * s(t), pitch * (t - 0.5), radius * c(t))
 
-runDemo()
+    def table_bottom(self, radius, legsCount, height):
+        y = lambda t: height * math.sin(legsCount * 2 * math.pi * t)
+        s = lambda t: math.sin(2 * math.pi * t)
+        c = lambda t: math.cos(2 * math.pi * t)
+        return lambda t: vector(radius * s(t), y(t), radius * c(t))
+
+    def circle(self, radius):
+        return lambda t: vector(
+            radius * math.sin(2 * math.pi * t),
+            0,
+            radius * math.cos(2 * math.pi * t),
+            )
+    
+    def drawScene(self):
+        # draw the frame of world coordinates
+        if self.showWorldFrame:
+            drawFrameAxes((0,0,0), Frame(vector(0,1,0), vector(1,0,0)))
+
+        (points, frames) = computeRMF(self.curve, self.sampleCount,
+            self.boundaryConditions,
+            self.adjustFrames, self.adjustmentFunc)
+        # display the results
+        if self.showFrames:
+            drawFrames(points, frames)
+        if self.showSweepSurface:
+            makeSweepSurface(points, frames, 0.9)
+    
+    def refresh(self):
+        clearScene()
+        self.drawScene()
+
+    def printInfo(self):
+        print "Curve sample count: " + str(self.sampleCount)
+        print "Adjust frames: " + str(self.adjustFrames)
+        print "Show sweep surface: " + str(self.showSweepSurface)
+        print "Show frames: " + str(self.showFrames)
+        print "Show world frame: " + str(self.showWorldFrame)
+        print "Boundary conditions: " + str(self.boundaryConditions)
+        print "Twist count:" + str( self.twistCount)
+        print
+
+    def printHelp(self):
+        print "Rotation minimization frame demo."
+        print
+        print "Mouse commands:"
+        print " right button + move: change the angle of view on an orbit"
+        print " both buttons + move up/down: change the radius on an orbit"
+        print
+        print "Keyboard commands:"
+        print " <space> - recompute the scene"
+        print " a - toggle adjusting frames (additional rotation using boundary conditions)"
+        print " c - increase the number curve samples by factor " + str(self.sampleCountIncreaseFactor)
+        print " C - decrease the number curve samples by factor " + str(1.0 / self.sampleCountIncreaseFactor)
+        print " f - toggle showing frames"
+        print " h - show this help"
+        print " p - print info"
+        print " r - use another curve from the list of example curves"
+        print " s - toggle showing sweep surface"
+        print " t - increase twist by 2 * PI"
+        print " t - decrease twist by 2 * PI"
+        print " w - toggle showing the world frame"
+        print
+        print "Example curves: helix, table legs, circle"
+    
+    def run(self):
+        print "Rotation minimization frame demo."
+        print "Press 'h' key for help on controls."
+        demo.drawScene()
+        
+        while True:
+            visual.rate(50)
+            if visual.scene.kb.keys: # event waiting to be processed?
+                key = visual.scene.kb.getkey() # get keyboard info
+                if len(key) == 1:
+                    if key == ' ':
+                        demo.refresh()
+                    elif key == 'a':
+                        demo.adjustFrames = not demo.adjustFrames
+                        demo.refresh()
+                    elif key == 'c':
+                        demo.sampleCount = max(3, int(demo.sampleCount * self))
+                        print 'Curve sample count: ' + str(demo.sampleCount)
+                        demo.refresh()
+                    elif key == 'C':
+                        demo.sampleCount = int(demo.sampleCount * (1 / self))
+                        print 'Curve sample count: ' + str(demo.sampleCount)
+                        demo.refresh()
+                    elif key == 'f':
+                        demo.showFrames = not demo.showFrames
+                        demo.refresh()
+                    elif key == 'p':
+                        demo.printInfo()
+                    elif key == 'h' or key == '?':
+                        demo.printHelp()
+                    elif key == 'r':
+                        selectedCurveIndex = demo.exampleCurves.index(demo.curve)
+                        selectedCurveIndex += 1
+                        selectedCurveIndex %= len(demo.exampleCurves)
+                        demo.curve = demo.exampleCurves[selectedCurveIndex]
+                        demo.refresh()
+                    elif key == 's':
+                        demo.showSweepSurface = not demo.showSweepSurface
+                        demo.refresh()
+                    elif key == 't':
+                        demo.twistCount += 1
+                        print 'Twist count: ' + str(demo.twistCount)
+                        demo.refresh()
+                    elif key == 'T':
+                        demo.twistCount -= 1
+                        print 'Twist count: ' + str(demo.twistCount)
+                        demo.refresh()
+                    elif key == 'w':
+                        demo.showWorldFrame = not demo.showWorldFrame
+                        demo.refresh()
+
+setWindow(800, 800)
+demo = Demo()
+demo.run()
