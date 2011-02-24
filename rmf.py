@@ -333,6 +333,8 @@ class Demo(object):
         print " C - decrease the number curve samples by factor " + str(1.0 / self.sampleCountIncreaseFactor)
         print " f - toggle showing frames"
         print " h - show this help"
+        print " n - disable interactive mode and switch to console"
+        print "     enable interactive mode by: demo.interactiveLoop()"
         print " p - print info"
         print " r - use another curve from the list of example curves"
         print " s - toggle showing sweep surface"
@@ -341,12 +343,8 @@ class Demo(object):
         print " w - toggle showing the world frame"
         print
         print "Example curves: helix, table legs, circle"
-    
-    def run(self):
-        print "Rotation minimization frame demo."
-        print "Press 'h' key for help on controls."
-        demo.drawScene()
-        
+
+    def interactiveLoop(self):
         while True:
             visual.rate(50)
             if visual.scene.kb.keys: # event waiting to be processed?
@@ -368,11 +366,15 @@ class Demo(object):
                     elif key == 'f':
                         demo.showFrames = not demo.showFrames
                         demo.refresh()
+                    elif key == 'n':
+                        break
                     elif key == 'p':
                         demo.printInfo()
                     elif key == 'h' or key == '?':
                         demo.printHelp()
                     elif key == 'r':
+                        # select next curve from the list of example curves
+                        # wrapping around the list
                         selectedCurveIndex = demo.exampleCurves.index(demo.curve)
                         selectedCurveIndex += 1
                         selectedCurveIndex %= len(demo.exampleCurves)
@@ -392,6 +394,13 @@ class Demo(object):
                     elif key == 'w':
                         demo.showWorldFrame = not demo.showWorldFrame
                         demo.refresh()
+    
+    def run(self):
+        print "Rotation minimization frame demo."
+        print "Press 'h' key for help on controls."
+        self.drawScene()
+        self.interactiveLoop()
+        
 
 setWindow(800, 800)
 demo = Demo()
