@@ -236,12 +236,6 @@ def drawFrames(points, frames):
         drawFrameAxes(points[i], frames[i])
         drawFrameProfiles(points[i], frames[i])
 
-def setWindow(width, height):
-    visual.scene.visible = False
-    visual.scene.width = width
-    visual.scene.height = height
-    visual.scene.visible = True
-
 def clearScene():
     scene = visual.display.get_selected()
     for obj in scene.objects:
@@ -252,10 +246,13 @@ def clearScene():
 
 class Demo(object):
     def  __init__(self):
+        visual.scene = visual.display(width=800, height=800)
+        
         self.exampleCurves = [
             self.helix(2, 4, 8),
             self.table_bottom(5, 5, 1),
             self.circle(5),
+            self.legs(),
             ]
         self.curve = self.exampleCurves[0]
         self.sampleCount = 50
@@ -268,6 +265,7 @@ class Demo(object):
         self.showSweepSurface = True
         self.showFrames = True
         self.showWorldFrame = True
+        self.fullscreen = False
         
         self.sampleCountIncreaseFactor = 0.75
 
@@ -290,6 +288,10 @@ class Demo(object):
             0,
             radius * math.cos(2 * math.pi * t),
             )
+
+    def legs(self):
+        u = lambda t: 5*t - 2.5
+        return lambda t: vector(u(t) * math.cos(0.5*t), 3 - (u(t) * u(t)), math.sin(8 * t))
     
     def drawScene(self):
         # draw the frame of world coordinates
@@ -308,6 +310,18 @@ class Demo(object):
     def refresh(self):
         clearScene()
         self.drawScene()
+
+    def toggleFullscreen(self):
+        self.fullscreen = not self.fullscreen
+        if self.fullscreen:
+            self.windowSize = (visual.scene.width, visual.scene.height)
+            self.windowPos = (visual.scene.x, visual.scene.y)
+        visual.scene.visible = False
+        visual.scene.fullscreen = self.fullscreen
+        if not self.fullscreen:
+            (visual.scene.width, visual.scene.height) = self.windowSize
+            (visual.scene.x, visual.scene.y) = self.windowPos
+        visual.scene.visible = True
 
     def printInfo(self):
         print "Curve sample count: " + str(self.sampleCount)
@@ -339,8 +353,9 @@ class Demo(object):
         print " r - use another curve from the list of example curves"
         print " s - toggle showing sweep surface"
         print " t - increase twist by 2 * PI"
-        print " t - decrease twist by 2 * PI"
+        print " T - decrease twist by 2 * PI"
         print " w - toggle showing the world frame"
+        print " F11 - toggle fullscreen and windowed mode"
         print
         print "Example curves: helix, table legs, circle"
 
@@ -356,11 +371,11 @@ class Demo(object):
                         demo.adjustFrames = not demo.adjustFrames
                         demo.refresh()
                     elif key == 'c':
-                        demo.sampleCount = max(3, int(demo.sampleCount * self))
+                        demo.sampleCount = max(3, int(demo.sampleCount * self.sampleCountIncreaseFactor))
                         print 'Curve sample count: ' + str(demo.sampleCount)
                         demo.refresh()
                     elif key == 'C':
-                        demo.sampleCount = int(demo.sampleCount * (1 / self))
+                        demo.sampleCount = int(demo.sampleCount * (1 / self.sampleCountIncreaseFactor))
                         print 'Curve sample count: ' + str(demo.sampleCount)
                         demo.refresh()
                     elif key == 'f':
@@ -375,7 +390,11 @@ class Demo(object):
                     elif key == 'r':
                         # select next curve from the list of example curves
                         # wrapping around the list
-                        selectedCurveIndex = demo.exampleCurves.index(demo.curve)
+                        selectedCurveIndex = 0
+                        try:
+                            selectedCurveIndex = demo.exampleCurves.index(demo.curve)
+                        except ValueError:
+                            print "Warning: Cannot find current curve, using the first one instead."
                         selectedCurveIndex += 1
                         selectedCurveIndex %= len(demo.exampleCurves)
                         demo.curve = demo.exampleCurves[selectedCurveIndex]
@@ -394,6 +413,9 @@ class Demo(object):
                     elif key == 'w':
                         demo.showWorldFrame = not demo.showWorldFrame
                         demo.refresh()
+                else:
+                    if key == 'f11':
+                        self.toggleFullscreen()
     
     def run(self):
         print "Rotation minimization frame demo."
@@ -402,6 +424,5 @@ class Demo(object):
         self.interactiveLoop()
         
 
-setWindow(800, 800)
 demo = Demo()
 demo.run()
