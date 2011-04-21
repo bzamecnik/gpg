@@ -1,0 +1,5 @@
+http://reference.wolfram.com/mathematica/ref/CountryData.html
+
+Graphics[{EdgeForm[Black], LightGray, 
+  CountryData[#, {"Polygon", "WinkelTripel"}] & /@ 
+   CountryData["Europe"]}]
