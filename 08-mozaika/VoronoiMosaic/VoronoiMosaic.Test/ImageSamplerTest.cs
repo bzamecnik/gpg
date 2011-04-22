@@ -14,7 +14,7 @@ namespace VoronoiMosaic.Test
         private static readonly string DATA_DIR = "../../../Data/";
         private static readonly string RESULTS_DIR = DATA_DIR + "Results/";
         private static readonly string INPUT_IMAGE = "kvetina.jpg";
-        private static readonly int SAMPLE_COUNT = 1000;
+        private static readonly int SAMPLE_COUNT = 100;
 
         [Fact]
         public void UniformSampleImage()
@@ -61,7 +61,27 @@ namespace VoronoiMosaic.Test
         public void DelaunayVisualize()
         {
             SampledImage sampledImage = SampleImage(new UniformImageSampler());
+            SaveSamplesToFile(sampledImage, "uniform_delaunay");
             ReconstructImage(sampledImage, new DelaunayVisualizer(), "uniform_delaunay");
+        }
+
+        [Fact]
+        public void GenerateSamplesForCircumscribedCircles()
+        {
+            int sampleCount = 7;
+            Bitmap image = (Bitmap)Bitmap.FromFile(DATA_DIR + INPUT_IMAGE);
+            IImageSampler sampler = new UniformImageSampler();
+            SampledImage sampledImage = sampler.SampleImage(image, sampleCount);
+            sampledImage.SaveToFile(RESULTS_DIR + "delaunay.txt");
+        }
+
+        [Fact]
+        public void TestCircumscribedCircles()
+        {
+            SampledImage sampledImage = SampledImage.LoadFromFile(RESULTS_DIR + "delaunay.txt");
+            ISampledImageVisualizer visualizer = new DelaunayVisualizer();
+            Bitmap reconstructedImage = visualizer.ReconstructImage(sampledImage);
+            reconstructedImage.Save(string.Format("{0}circumscribed.png", RESULTS_DIR));
         }
 
         private static SampledImage SampleImage(IImageSampler sampler)

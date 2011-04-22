@@ -22,7 +22,7 @@ namespace VoronoiMosaic
 
             foreach(ImageSample sample in sampledImage.Samples)
             {
-                image.SetPixel(sample.x, sample.y, sample.color);
+                image.SetPixel(sample.X, sample.Y, sample.color);
             }
 
             return image;

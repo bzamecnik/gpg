@@ -3,19 +3,26 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using OpenTK;
 
 namespace VoronoiMosaic
 {
     public struct ImageSample : IEquatable<ImageSample>
     {
-        public int x;
-        public int y;
+        public Vector2 position;
         public Color color;
 
+        public int X { get { return (int)position.X; } }
+        public int Y { get { return (int)position.Y; } }
+
         public ImageSample(int x, int y, Color color)
+            : this(new Vector2(x, y), color)
         {
-            this.x = x;
-            this.y = y;
+        }
+
+        public ImageSample(Vector2 position, Color color)
+        {
+            this.position = position;
             this.color = color;
         }
 
@@ -26,9 +33,7 @@ namespace VoronoiMosaic
                 return false;
             }
 
-            return (this.x == other.x) &&
-                (this.y == other.y) &&
-                this.color.Equals(other.color);
+            return this.position.Equals(other.position) && this.color.Equals(other.color);
         }
 
         // override object.Equals
@@ -51,7 +56,7 @@ namespace VoronoiMosaic
 
         public override int GetHashCode()
         {
-            return x ^ y ^ color.GetHashCode();
+            return position.GetHashCode() ^ color.GetHashCode();
         }
 
         public static bool operator ==(ImageSample sample1, ImageSample sample2)

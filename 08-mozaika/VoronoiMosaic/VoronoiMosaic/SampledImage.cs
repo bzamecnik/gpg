@@ -31,7 +31,7 @@ namespace VoronoiMosaic
                 writer.WriteLine(Height);
                 foreach (ImageSample sample in Samples)
                 {
-                    writer.WriteLine("{0} {1} {2}", sample.x, sample.y, sample.color.ToArgb());
+                    writer.WriteLine("{0} {1} {2}", sample.X, sample.Y, sample.color.ToArgb());
                 }
             }
         }
@@ -60,6 +60,7 @@ namespace VoronoiMosaic
                 }
                 catch (FormatException ex)
                 {
+                    Console.Error.WriteLine(ex.Message);
                     return null;
                 }
             }
@@ -90,8 +91,6 @@ namespace VoronoiMosaic
         // override object.GetHashCode
         public override int GetHashCode()
         {
-            // TODO: write your implementation of GetHashCode() here
-            throw new NotImplementedException();
             return base.GetHashCode();
         }
     }

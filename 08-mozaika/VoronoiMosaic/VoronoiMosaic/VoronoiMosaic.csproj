@@ -31,6 +31,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="OpenTK, Version=1.0.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -46,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConversionExtensions.cs" />
     <Compile Include="GaussianDistribution2D.cs" />
     <Compile Include="GaussianImageSampler.cs" />
     <Compile Include="IImageSampler.cs" />
@@ -56,6 +58,7 @@
     <Compile Include="SampledImage.cs" />
     <Compile Include="UniformImageSampler.cs" />
     <Compile Include="DelaunayVisualizer.cs" />
+    <Compile Include="VoronoiHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\poly2tri-cs\Poly2Tri.csproj">
