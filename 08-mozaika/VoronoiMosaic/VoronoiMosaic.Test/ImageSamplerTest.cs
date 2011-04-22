@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Text;
-using Xunit;
 using VoronoiMosaic;
-using System.Drawing;
-using System.Diagnostics;
+using Xunit;
 
 namespace VoronoiMosaic.Test
 {
@@ -13,7 +13,7 @@ namespace VoronoiMosaic.Test
     {
         private static readonly string DATA_DIR = "../../../Data/";
         private static readonly string INPUT_IMAGE = "kvetina.jpg";
-        private static readonly int SAMPLE_COUNT = 100000;
+        private static readonly int SAMPLE_COUNT = 1000;
 
         [Fact]
         public void UniformSampleImage()
@@ -54,6 +54,13 @@ namespace VoronoiMosaic.Test
             SampledImage loadedSampledImage = LoadSamplesFromFile("uniform");
             //Assert.Equal(sampledImage, loadedSampledImage);
             ReconstructImage(loadedSampledImage, new PointVisualizer(), "uniform");
+        }
+
+        [Fact]
+        public void DelaunayVisualize()
+        {
+            SampledImage sampledImage = SampleImage(new UniformImageSampler());
+            ReconstructImage(sampledImage, new DelaunayVisualizer(), "uniform_delaunay");
         }
 
         private static SampledImage SampleImage(IImageSampler sampler)

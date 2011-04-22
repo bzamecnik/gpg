@@ -55,6 +55,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SampledImage.cs" />
     <Compile Include="UniformImageSampler.cs" />
+    <Compile Include="DelaunayVisualizer.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\poly2tri-cs\Poly2Tri.csproj">
+      <Project>{C5E5802D-6A45-4FE9-BAE7-5F0AE91D72C1}</Project>
+      <Name>Poly2Tri</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

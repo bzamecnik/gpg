@@ -1,0 +1,284 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Poly2Tri</name>
+    </assembly>
+    <members>
+        <member name="T:Poly2Tri.TriangulationUtil">
+            @author Thomas Åhlén, thahlen@gmail.com
+        </member>
+        <member name="M:Poly2Tri.TriangulationUtil.SmartIncircle(Poly2Tri.TriangulationPoint,Poly2Tri.TriangulationPoint,Poly2Tri.TriangulationPoint,Poly2Tri.TriangulationPoint)">
+            <summary>
+              Requirements:
+            1. a,b and c form a triangle.
+            2. a and d is know to be on opposite side of bc
+            <code>
+                           a
+                           +
+                          / \
+                         /   \
+                       b/     \c
+                       +-------+ 
+                      /    B    \  
+                     /           \ 
+            </code>
+               Facts:
+             d has to be in area B to have a chance to be inside the circle formed by a,b and c
+             d is outside B if orient2d(a,b,d) or orient2d(c,a,d) is CW
+             This preknowledge gives us a way to optimize the incircle test
+            </summary>
+            <param name="pa">triangle point, opposite d</param>
+            <param name="pb">triangle point</param>
+            <param name="pc">triangle point</param>
+            <param name="pd">point opposite a</param>
+            <returns>true if d is inside circle, false if on circle edge</returns>
+        </member>
+        <member name="M:Poly2Tri.TriangulationUtil.Orient2d(Poly2Tri.TriangulationPoint,Poly2Tri.TriangulationPoint,Poly2Tri.TriangulationPoint)">
+            Forumla to calculate signed area
+            Positive if CCW
+            Negative if CW
+            0 if collinear
+            A[P1,P2,P3]  =  (x1*y2 - y1*x2) + (x2*y3 - y2*x3) + (x3*y1 - y3*x1)
+                         =  (x1-x3)*(y2-y3) - (y1-y3)*(x2-x3)
+        </member>
+        <member name="M:Poly2Tri.DelaunayTriangle.MarkNeighbor(Poly2Tri.TriangulationPoint,Poly2Tri.TriangulationPoint,Poly2Tri.DelaunayTriangle)">
+            <summary>
+            Update neighbor pointers
+            </summary>
+            <param name="p1">Point 1 of the shared edge</param>
+            <param name="p2">Point 2 of the shared edge</param>
+            <param name="t">This triangle's new neighbor</param>
+        </member>
+        <member name="M:Poly2Tri.DelaunayTriangle.MarkNeighbor(Poly2Tri.DelaunayTriangle)">
+            <summary>
+            Exhaustive search to update neighbor pointers
+            </summary>
+        </member>
+        <member name="M:Poly2Tri.DelaunayTriangle.OppositePoint(Poly2Tri.DelaunayTriangle,Poly2Tri.TriangulationPoint)">
+            <param name="t">Opposite triangle</param>
+            <param name="p">The point in t that isn't shared between the triangles</param>
+        </member>
+        <member name="M:Poly2Tri.DelaunayTriangle.Legalize(Poly2Tri.TriangulationPoint,Poly2Tri.TriangulationPoint)">
+            <summary>
+            Legalize triangle by rotating clockwise around oPoint
+            </summary>
+            <param name="oPoint">The origin point to rotate around</param>
+            <param name="nPoint">???</param>
+        </member>
+        <member name="M:Poly2Tri.DelaunayTriangle.MarkNeighborEdges">
+            <summary>
+            Finalize edge marking
+            </summary>
+        </member>
+        <member name="M:Poly2Tri.DelaunayTriangle.MarkConstrainedEdge(Poly2Tri.TriangulationPoint,Poly2Tri.TriangulationPoint)">
+            <summary>
+            Mark edge as constrained
+            </summary>
+        </member>
+        <member name="M:Poly2Tri.DelaunayTriangle.EdgeIndex(Poly2Tri.TriangulationPoint,Poly2Tri.TriangulationPoint)">
+            <summary>
+            Get the index of the neighbor that shares this edge (or -1 if it isn't shared)
+            </summary>
+            <returns>index of the shared edge or -1 if edge isn't shared</returns>
+        </member>
+        <member name="M:Poly2Tri.Polygon.#ctor(System.Collections.Generic.IList{Poly2Tri.PolygonPoint})">
+            <summary>
+            Create a polygon from a list of at least 3 points with no duplicates.
+            </summary>
+            <param name="points">A list of unique points</param>
+        </member>
+        <member name="M:Poly2Tri.Polygon.#ctor(System.Collections.Generic.IEnumerable{Poly2Tri.PolygonPoint})">
+            <summary>
+            Create a polygon from a list of at least 3 points with no duplicates.
+            </summary>
+            <param name="points">A list of unique points.</param>
+        </member>
+        <member name="M:Poly2Tri.Polygon.#ctor(Poly2Tri.PolygonPoint[])">
+            <summary>
+            Create a polygon from a list of at least 3 points with no duplicates.
+            </summary>
+            <param name="points">A list of unique points.</param>
+        </member>
+        <member name="M:Poly2Tri.Polygon.AddHole(Poly2Tri.Polygon)">
+            <summary>
+            Add a hole to the polygon.
+            </summary>
+            <param name="poly">A subtraction polygon fully contained inside this polygon.</param>
+        </member>
+        <member name="M:Poly2Tri.Polygon.InsertPointAfter(Poly2Tri.PolygonPoint,Poly2Tri.PolygonPoint)">
+            <summary>
+            Inserts newPoint after point.
+            </summary>
+            <param name="point">The point to insert after in the polygon</param>
+            <param name="newPoint">The point to insert into the polygon</param>
+        </member>
+        <member name="M:Poly2Tri.Polygon.AddPoints(System.Collections.Generic.IEnumerable{Poly2Tri.PolygonPoint})">
+            <summary>
+            Inserts list (after last point in polygon?)
+            </summary>
+            <param name="list"></param>
+        </member>
+        <member name="M:Poly2Tri.Polygon.AddPoint(Poly2Tri.PolygonPoint)">
+            <summary>
+            Adds a point after the last in the polygon.
+            </summary>
+            <param name="p">The point to add</param>
+        </member>
+        <member name="M:Poly2Tri.Polygon.RemovePoint(Poly2Tri.PolygonPoint)">
+            <summary>
+            Removes a point from the polygon.
+            </summary>
+            <param name="p"></param>
+        </member>
+        <member name="M:Poly2Tri.Polygon.Prepare(Poly2Tri.TriangulationContext)">
+            <summary>
+            Creates constraints and populates the context with points
+            </summary>
+            <param name="tcx">The context</param>
+        </member>
+        <member name="T:Poly2Tri.DTSweepContext">
+             
+             @author Thomas Åhlén, thahlen@gmail.com
+            
+        </member>
+        <member name="M:Poly2Tri.DTSweepContext.MapTriangleToNodes(Poly2Tri.DelaunayTriangle)">
+            <summary>
+            Try to map a node to all sides of this triangle that don't have 
+            a neighbor.
+            </summary>
+        </member>
+        <member name="M:Poly2Tri.DTSweepConstraint.#ctor(Poly2Tri.TriangulationPoint,Poly2Tri.TriangulationPoint)">
+            <summary>
+            Give two points in any order. Will always be ordered so
+            that q.y > p.y and q.x > p.x if same y value 
+            </summary>
+        </member>
+        <member name="M:Poly2Tri.DTSweep.Triangulate(Poly2Tri.DTSweepContext)">
+            <summary>
+            Triangulate simple polygon with holes
+            </summary>
+        </member>
+        <member name="M:Poly2Tri.DTSweep.Sweep(Poly2Tri.DTSweepContext)">
+            <summary>
+            Start sweeping the Y-sorted point set from bottom to top
+            </summary>
+        </member>
+        <member name="M:Poly2Tri.DTSweep.FinalizationConvexHull(Poly2Tri.DTSweepContext)">
+            <summary>
+            If this is a Delaunay Triangulation of a pointset we need to fill so the triangle mesh gets a ConvexHull 
+            </summary>
+        </member>
+        <member name="M:Poly2Tri.DTSweep.TurnAdvancingFrontConvex(Poly2Tri.DTSweepContext,Poly2Tri.AdvancingFrontNode,Poly2Tri.AdvancingFrontNode)">
+            <summary>
+            We will traverse the entire advancing front and fill it to form a convex hull.
+            </summary>
+        </member>
+        <member name="M:Poly2Tri.DTSweep.PointEvent(Poly2Tri.DTSweepContext,Poly2Tri.TriangulationPoint)">
+            <summary>
+            Find closes node to the left of the new point and
+            create a new triangle. If needed new holes and basins
+            will be filled to.
+            </summary>
+        </member>
+        <member name="M:Poly2Tri.DTSweep.NewFrontTriangle(Poly2Tri.DTSweepContext,Poly2Tri.TriangulationPoint,Poly2Tri.AdvancingFrontNode)">
+            <summary>
+            Creates a new front triangle and legalize it
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Poly2Tri.DTSweep.SplitEdge(Poly2Tri.TriangulationPoint,Poly2Tri.TriangulationPoint,Poly2Tri.TriangulationPoint)" -->
+        <member name="M:Poly2Tri.DTSweep.NextFlipPoint(Poly2Tri.TriangulationPoint,Poly2Tri.TriangulationPoint,Poly2Tri.DelaunayTriangle,Poly2Tri.TriangulationPoint)">
+            <summary>
+            When we need to traverse from one triangle to the next we need 
+            the point in current triangle that is the opposite point to the next
+            triangle. 
+            </summary>
+        </member>
+        <member name="M:Poly2Tri.DTSweep.NextFlipTriangle(Poly2Tri.DTSweepContext,Poly2Tri.Orientation,Poly2Tri.DelaunayTriangle,Poly2Tri.DelaunayTriangle,Poly2Tri.TriangulationPoint,Poly2Tri.TriangulationPoint)">
+            <summary>
+            After a flip we have two triangles and know that only one will still be
+            intersecting the edge. So decide which to contiune with and legalize the other
+            </summary>
+            <param name="tcx"></param>
+            <param name="o">should be the result of an TriangulationUtil.orient2d( eq, op, ep )</param>
+            <param name="t">triangle 1</param>
+            <param name="ot">triangle 2</param>
+            <param name="p">a point shared by both triangles</param>
+            <param name="op">another point shared by both triangles</param>
+            <returns>returns the triangle still intersecting the edge</returns>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Poly2Tri.DTSweep.FlipScanEdgeEvent(Poly2Tri.DTSweepContext,Poly2Tri.TriangulationPoint,Poly2Tri.TriangulationPoint,Poly2Tri.DelaunayTriangle,Poly2Tri.DelaunayTriangle,Poly2Tri.TriangulationPoint)" -->
+        <member name="M:Poly2Tri.DTSweep.FillAdvancingFront(Poly2Tri.DTSweepContext,Poly2Tri.AdvancingFrontNode)">
+            <summary>
+            Fills holes in the Advancing Front
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Poly2Tri.DTSweep.FillBasin(Poly2Tri.DTSweepContext,Poly2Tri.AdvancingFrontNode)" -->
+        <member name="M:Poly2Tri.DTSweep.FillBasinReq(Poly2Tri.DTSweepContext,Poly2Tri.AdvancingFrontNode)">
+            <summary>
+            Recursive algorithm to fill a Basin with triangles
+            </summary>
+        </member>
+        <member name="M:Poly2Tri.DTSweep.HoleAngle(Poly2Tri.AdvancingFrontNode)">
+            <summary>
+            ???
+            </summary>
+            <param name="node">middle node</param>
+            <returns>the angle between 3 front nodes</returns>
+        </member>
+        <member name="M:Poly2Tri.DTSweep.BasinAngle(Poly2Tri.AdvancingFrontNode)">
+            <summary>
+            The basin angle is decided against the horizontal line [1,0]
+            </summary>
+        </member>
+        <member name="M:Poly2Tri.DTSweep.Fill(Poly2Tri.DTSweepContext,Poly2Tri.AdvancingFrontNode)">
+            <summary>
+            Adds a triangle to the advancing front to fill a hole.
+            </summary>
+            <param name="tcx"></param>
+            <param name="node">middle node, that is the bottom of the hole</param>
+        </member>
+        <member name="M:Poly2Tri.DTSweep.Legalize(Poly2Tri.DTSweepContext,Poly2Tri.DelaunayTriangle)">
+            <summary>
+            Returns true if triangle was legalized
+            </summary>
+        </member>
+        <member name="M:Poly2Tri.DTSweep.RotateTrianglePair(Poly2Tri.DelaunayTriangle,Poly2Tri.TriangulationPoint,Poly2Tri.DelaunayTriangle,Poly2Tri.TriangulationPoint)">
+            <summary>
+            Rotates a triangle pair one vertex CW
+                  n2                    n2
+             P +-----+             P +-----+
+               | t  /|               |\  t |  
+               |   / |               | \   |
+             n1|  /  |n3           n1|  \  |n3
+               | /   |    after CW   |   \ |
+               |/ oT |               | oT \|
+               +-----+ oP            +-----+
+                  n4                    n4
+            </summary>
+        </member>
+        <member name="M:Poly2Tri.P2T.Warmup">
+            <summary>
+            Will do a warmup run to let the JVM optimize the triangulation code -- or would if this were Java --MM
+            </summary>
+        </member>
+        <member name="T:Poly2Tri.AdvancingFront">
+            @author Thomas Åhlen (thahlen@gmail.com)
+        </member>
+        <member name="M:Poly2Tri.AdvancingFront.FindSearchNode(System.Double)">
+            <summary>
+            MM:  This seems to be used by LocateNode to guess a position in the implicit linked list of AdvancingFrontNodes near x
+                 Removed an overload that depended on this being exact
+            </summary>
+        </member>
+        <member name="M:Poly2Tri.AdvancingFront.LocateNode(Poly2Tri.TriangulationPoint)">
+            <summary>
+            We use a balancing tree to locate a node smaller or equal to given key value (in theory)
+            </summary>
+        </member>
+        <member name="M:Poly2Tri.AdvancingFront.LocatePoint(Poly2Tri.TriangulationPoint)">
+            <summary>
+            This implementation will use simple node traversal algorithm to find a point on the front
+            </summary>
+        </member>
+    </members>
+</doc>
