@@ -16,8 +16,24 @@ namespace VoronoiMosaic
             List<TriangulationPoint> points = new List<TriangulationPoint>();
             foreach (ImageSample sample in sampledImage.Samples)
             {
-                points.Add(new PolygonPoint(sample.position.X, sample.position.Y));
+                points.Add(new TriangulationPoint(sample.position.X, sample.position.Y));
             }
+
+            int width = sampledImage.Width;
+            int height = sampledImage.Height;
+
+            // add a bounding box in order to make Voronoi cells bounded
+            // inside the image
+            points.Add(new TriangulationPoint(-width, -height));
+            points.Add(new TriangulationPoint(-width, 2 * height));
+            points.Add(new TriangulationPoint(2 * width, 2 * height));
+            points.Add(new TriangulationPoint(2 * width, -height));
+
+            return MakeDelaunayTriangulation(points);
+        }
+
+        public static PointSet MakeDelaunayTriangulation(List<TriangulationPoint> points)
+        {
             PointSet polygon = new PointSet(points);
             try
             {
