@@ -12,6 +12,7 @@ namespace VoronoiMosaic.Test
     public class ImageSamplerTest
     {
         private static readonly string DATA_DIR = "../../../Data/";
+        private static readonly string RESULTS_DIR = DATA_DIR + "Results/";
         private static readonly string INPUT_IMAGE = "kvetina.jpg";
         private static readonly int SAMPLE_COUNT = 1000;
 
@@ -71,18 +72,18 @@ namespace VoronoiMosaic.Test
 
         private static void SaveSamplesToFile(SampledImage sampledImage, string sampler)
         {
-            sampledImage.SaveToFile(string.Format("{0}{1}_samples_{2}_{3}.txt", DATA_DIR, INPUT_IMAGE, sampler, SAMPLE_COUNT));
+            sampledImage.SaveToFile(string.Format("{0}{1}_samples_{2}_{3}.txt", RESULTS_DIR, INPUT_IMAGE, sampler, SAMPLE_COUNT));
         }
 
         private static SampledImage LoadSamplesFromFile(string sampler)
         {
-            return SampledImage.LoadFromFile(string.Format("{0}{1}_samples_{2}_{3}.txt", DATA_DIR, INPUT_IMAGE, sampler, SAMPLE_COUNT));
+            return SampledImage.LoadFromFile(string.Format("{0}{1}_samples_{2}_{3}.txt", RESULTS_DIR, INPUT_IMAGE, sampler, SAMPLE_COUNT));
         }
 
         private static void ReconstructImage(SampledImage sampledImage, ISampledImageVisualizer visualizer, string sampler)
         {
             Bitmap reconstructedImage = visualizer.ReconstructImage(sampledImage);
-            reconstructedImage.Save(string.Format("{0}{1}_reconstructed_{2}_{3}.png", DATA_DIR, INPUT_IMAGE, sampler, SAMPLE_COUNT));
+            reconstructedImage.Save(string.Format("{0}{1}_reconstructed_{2}_{3}.png", RESULTS_DIR, INPUT_IMAGE, sampler, SAMPLE_COUNT));
         }
     }
 }
