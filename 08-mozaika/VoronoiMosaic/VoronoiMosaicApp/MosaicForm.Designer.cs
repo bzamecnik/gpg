@@ -63,6 +63,9 @@
             this.reconstructedImagetabPage = new System.Windows.Forms.TabPage();
             this.reconstructedPictureBox = new System.Windows.Forms.PictureBox();
             this.originalImageOpenFileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.reconstructedImageSaveFileDialog = new System.Windows.Forms.SaveFileDialog();
+            this.sampledImageOpenFileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.sampledImageSaveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
@@ -399,6 +402,7 @@
             this.saveSampledImageButton.TabIndex = 1;
             this.saveSampledImageButton.Text = "Save sampled image";
             this.saveSampledImageButton.UseVisualStyleBackColor = true;
+            this.saveSampledImageButton.Click += new System.EventHandler(this.saveSampledImageButton_Click);
             // 
             // saveButton
             // 
@@ -410,6 +414,7 @@
             this.saveButton.TabIndex = 1;
             this.saveButton.Text = "Save reconstructed image";
             this.saveButton.UseVisualStyleBackColor = true;
+            this.saveButton.Click += new System.EventHandler(this.saveButton_Click);
             // 
             // loadSampledImageButton
             // 
@@ -421,6 +426,7 @@
             this.loadSampledImageButton.TabIndex = 0;
             this.loadSampledImageButton.Text = "Load sampled image";
             this.loadSampledImageButton.UseVisualStyleBackColor = true;
+            this.loadSampledImageButton.Click += new System.EventHandler(this.loadSampledImageButton_Click);
             // 
             // loadButton
             // 
@@ -514,6 +520,23 @@
             this.originalImageOpenFileDialog.Title = "Open original image";
             this.originalImageOpenFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.originalImageOpenFileDialog_FileOk);
             // 
+            // reconstructedImageSaveFileDialog
+            // 
+            this.reconstructedImageSaveFileDialog.Filter = "PNG Files|*.png|JPEG Files|*.jpg|GIF Files|*.gif|Bitmap Files|*.bmp|TIFF Files|*." +
+                "tif|All Image types|*.png;*.bmp;*.gif;*.jpg;*.tif";
+            this.reconstructedImageSaveFileDialog.Title = "Save reconstructed image";
+            this.reconstructedImageSaveFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.reconstructedImageSaveFileDialog_FileOk);
+            // 
+            // sampledImageOpenFileDialog
+            // 
+            this.sampledImageOpenFileDialog.Filter = "Text|*.txt|All file types|*.*";
+            this.sampledImageOpenFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.sampledImageOpenFileDialog_FileOk);
+            // 
+            // sampledImageSaveFileDialog
+            // 
+            this.sampledImageSaveFileDialog.Filter = "Text|*.txt|All file types|*.*";
+            this.sampledImageSaveFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.sampledImageSaveFileDialog_FileOk);
+            // 
             // MosaicForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -583,6 +606,9 @@
         private System.Windows.Forms.Button imageSizeOriginalButton;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.GroupBox groupBox5;
+        private System.Windows.Forms.SaveFileDialog reconstructedImageSaveFileDialog;
+        private System.Windows.Forms.OpenFileDialog sampledImageOpenFileDialog;
+        private System.Windows.Forms.SaveFileDialog sampledImageSaveFileDialog;
     }
 }
 

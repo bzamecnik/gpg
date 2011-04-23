@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -132,6 +133,34 @@ namespace VoronoiMosaic.GUI
             originalImageOpenFileDialog.ShowDialog();
         }
 
+        private void saveButton_Click(object sender, EventArgs e)
+        {
+            if (reconstructedImage != null)
+            {
+                reconstructedImageSaveFileDialog.ShowDialog();
+            }
+        }
+
+        private void loadSampledImageButton_Click(object sender, EventArgs e)
+        {
+            sampledImageOpenFileDialog.ShowDialog();
+        }
+
+        private void saveSampledImageButton_Click(object sender, EventArgs e)
+        {
+            if (sampledImage != null)
+            {
+                sampledImageSaveFileDialog.FileName = GetDefaultSampledImageFileName();
+                sampledImageSaveFileDialog.ShowDialog();
+            }
+        }
+
+        private string GetDefaultSampledImageFileName()
+        {
+            return System.IO.Path.GetFileNameWithoutExtension(
+                originalImageOpenFileDialog.FileName) + ".txt";
+        }
+
         private void originalImageOpenFileDialog_FileOk(object sender, CancelEventArgs e)
         {
             if (originalImage != null)
@@ -141,6 +170,57 @@ namespace VoronoiMosaic.GUI
             originalImage = (Bitmap)Bitmap.FromFile(originalImageOpenFileDialog.FileName);
             SetPictureBoxImage(originalPictureBox, originalImage);
             imageTabControl.SelectedIndex = 0;
+        }
+
+        private void reconstructedImageSaveFileDialog_FileOk(object sender, CancelEventArgs e)
+        {
+            if (reconstructedImage == null)
+            {
+                return;
+            }
+            string fileName = reconstructedImageSaveFileDialog.FileName;
+            reconstructedImage.Save(fileName, GetFormatFromFileName(fileName));
+        }
+
+
+        private void sampledImageOpenFileDialog_FileOk(object sender, CancelEventArgs e)
+        {
+            sampledImage = SampledImage.LoadFromFile(sampledImageOpenFileDialog.FileName);
+        }
+
+        private void sampledImageSaveFileDialog_FileOk(object sender, CancelEventArgs e)
+        {
+            if (sampledImage == null)
+            {
+                return;
+            }
+            sampledImage.SaveToFile(sampledImageSaveFileDialog.FileName);
+        }
+
+        private ImageFormat GetFormatFromFileName(string fileName)
+        {
+            string fileNameLower = fileName.ToLower();
+            if (fileNameLower.EndsWith(".png"))
+            {
+                return ImageFormat.Png;
+            }
+            else if (fileNameLower.EndsWith(".jpg") || fileNameLower.EndsWith(".jpeg"))
+            {
+                return ImageFormat.Jpeg;
+            }
+            else if (fileNameLower.EndsWith(".gif"))
+            {
+                return ImageFormat.Gif;
+            }
+            else if (fileNameLower.EndsWith(".tif") || fileNameLower.EndsWith(".tiff"))
+            {
+                return ImageFormat.Tiff;
+            }
+            else if (fileNameLower.EndsWith(".bmp"))
+            {
+                return ImageFormat.Bmp;
+            }
+            return ImageFormat.Png;
         }
 
         private void sampleImageButton_Click(object sender, EventArgs e)
