@@ -15,6 +15,7 @@ namespace VoronoiMosaic
         public bool DelaunayTrianglesEnabled { get; set; }
         public bool VoronoiVerticesEnabled { get; set; }
         public bool DelaunayCircumcirclesEnabled { get; set; }
+        public bool AntiAliasingEnabled { get; set; }
 
         Random random = new Random();
 
@@ -36,7 +37,9 @@ namespace VoronoiMosaic
                 // fill with black background
                 //graphics.FillRectangle(Brushes.White, 0, 0, width, height);
 
-                graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
+                graphics.SmoothingMode = AntiAliasingEnabled ?
+                    System.Drawing.Drawing2D.SmoothingMode.AntiAlias :
+                    System.Drawing.Drawing2D.SmoothingMode.None;
                 
                 if (VoronoiCellsEnabled)
                 {
