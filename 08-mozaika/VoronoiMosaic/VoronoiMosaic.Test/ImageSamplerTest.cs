@@ -14,7 +14,7 @@ namespace VoronoiMosaic.Test
         private static readonly string DATA_DIR = "../../../Data/";
         private static readonly string RESULTS_DIR = DATA_DIR + "Results/";
         private static readonly string INPUT_IMAGE = "kvetina.jpg";
-        private static readonly int SAMPLE_COUNT = 100;
+        private static readonly int SAMPLE_COUNT = 10000;
 
         [Fact]
         public void UniformSampleImage()
