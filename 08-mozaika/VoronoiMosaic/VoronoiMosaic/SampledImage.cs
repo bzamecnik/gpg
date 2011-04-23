@@ -32,11 +32,13 @@ namespace VoronoiMosaic
         public int Height { get; set; }
 
         public void AddSample(ImageSample sample) {
+            int previousCount = Samples.Count;
             Samples.Add(sample);
-            Point samplePos = new Point(sample.X, sample.Y);
-            if (!SampleMap.ContainsKey(samplePos))
+            int diff = Samples.Count - previousCount;
+            if (diff > 0)
             {
-                SampleMap.Add(samplePos, sample);
+                // add sample only if it is not a duplicate
+                SampleMap.Add(new Point(sample.X, sample.Y), sample);
             }
         }
 
