@@ -56,6 +56,7 @@ namespace VoronoiMosaic.GUI
             showVoronoiCellBordersCheckBox.Checked = voronoiVisualizer.VoronoiCellBordersEnabled;
             showVoronoiVerticesCheckBox.Checked = voronoiVisualizer.VoronoiVerticesEnabled;
             enableAntialiasingCheckBox.Checked = voronoiVisualizer.AntiAliasingEnabled;
+            cacheTriangulationCheckBox.Checked = voronoiVisualizer.TriangulationCachingEnabled;
         }
 
         private void GetVoronoiVisualizerOptions()
@@ -66,6 +67,7 @@ namespace VoronoiMosaic.GUI
             voronoiVisualizer.VoronoiCellBordersEnabled = showVoronoiCellBordersCheckBox.Checked;
             voronoiVisualizer.VoronoiVerticesEnabled = showVoronoiVerticesCheckBox.Checked;
             voronoiVisualizer.AntiAliasingEnabled = enableAntialiasingCheckBox.Checked;
+            voronoiVisualizer.TriangulationCachingEnabled = cacheTriangulationCheckBox.Checked;
         }
 
         private void SampleImage()

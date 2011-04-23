@@ -16,12 +16,20 @@ namespace VoronoiMosaic
         public bool VoronoiVerticesEnabled { get; set; }
         public bool DelaunayCircumcirclesEnabled { get; set; }
         public bool AntiAliasingEnabled { get; set; }
+        public bool TriangulationCachingEnabled { get; set; }
 
-        Random random = new Random();
+        private Random random = new Random();
+
+        private SampledImage previousSampledImage;
+        /// <summary>
+        /// Cached Delaunay triangulation of the previously sampled image.
+        /// </summary>
+        private PointSet previousTriMesh;
 
         public VoronoiVisualizer()
         {
             VoronoiCellsEnabled = true;
+            TriangulationCachingEnabled = true;
         }
 
         public Bitmap ReconstructImage(SampledImage sampledImage)
@@ -30,7 +38,15 @@ namespace VoronoiMosaic
             int height = sampledImage.Height;
             Bitmap image = new Bitmap(width, height);
 
-            PointSet triMesh = VoronoiHelper.MakeDelaunayTriangulation(sampledImage);
+            // use cached triangulation if possible
+            PointSet triMesh =
+                (TriangulationCachingEnabled && sampledImage.Equals(previousSampledImage)) ?            
+                    previousTriMesh :VoronoiHelper.MakeDelaunayTriangulation(sampledImage);
+            lock (this)
+            {
+                previousTriMesh = triMesh;
+                previousSampledImage = sampledImage;
+            }
 
             using (Graphics graphics = Graphics.FromImage(image))
             {
