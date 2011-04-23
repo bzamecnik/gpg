@@ -14,7 +14,7 @@ namespace VoronoiMosaic.Test
         private static readonly string DATA_DIR = "../../../Data/";
         private static readonly string RESULTS_DIR = DATA_DIR + "Results/";
         private static readonly string INPUT_IMAGE = "kvetina.jpg";
-        private static readonly int SAMPLE_COUNT = 10000;
+        private static readonly int SAMPLE_COUNT = 1000;
 
         [Fact]
         public void UniformSampleImage()
@@ -60,9 +60,20 @@ namespace VoronoiMosaic.Test
         [Fact]
         public void VoronoiVisualize()
         {
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Reset();
+            stopwatch.Start();
             SampledImage sampledImage = SampleImage(new UniformImageSampler());
+            stopwatch.Stop();
+            Console.WriteLine("Sampling - elapsed time: {0} ms", stopwatch.ElapsedMilliseconds);
+
             //SaveSamplesToFile(sampledImage, "uniform_voronoi");
+
+            stopwatch.Reset();
+            stopwatch.Start();
             ReconstructImage(sampledImage, new VoronoiVisualizer(), "uniform_voronoi");
+            stopwatch.Stop();
+            Console.WriteLine("Visualizing - elapsed time: {0} ms", stopwatch.ElapsedMilliseconds);
         }
 
         [Fact]
