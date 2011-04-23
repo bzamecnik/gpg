@@ -11,6 +11,7 @@ namespace VoronoiMosaic
     public class VoronoiVisualizer : ISampledImageVisualizer
     {
         public bool VoronoiCellsEnabled { get; set; }
+        public bool VoronoiCellBordersEnabled { get; set; }
         public bool DelaunayTrianglesEnabled { get; set; }
         public bool VoronoiVerticesEnabled { get; set; }
         public bool DelaunayCircumcirclesEnabled { get; set; }
@@ -35,7 +36,7 @@ namespace VoronoiMosaic
                 // fill with black background
                 //graphics.FillRectangle(Brushes.White, 0, 0, width, height);
 
-                graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
                 
                 if (VoronoiCellsEnabled)
                 {
@@ -100,13 +101,16 @@ namespace VoronoiMosaic
                     // to the current triangle vertex
 
                     //Color sampleColor = GetRandomColor();
-                    Color sampleColor = sampledImage.Samples.FirstOrDefault(
-                        (sample) =>
-                            ((int)sample.position.X == (int)triVertex.X) &&
-                            ((int)sample.position.Y == (int)triVertex.Y)).color;
-                    
+                    ImageSample imageSample;
+                    Color sampleColor = Color.Pink;  // DEBUG
+                    if (sampledImage.SampleMap.TryGetValue(new Point((int)triVertex.X,(int)triVertex.Y), out imageSample)) {
+                        sampleColor = imageSample.color;
+                    }
                     graphics.FillPolygon(new SolidBrush(sampleColor), voronoiCellPolygon);
-                    graphics.DrawPolygon(Pens.Gray, voronoiCellPolygon);
+                    if (VoronoiCellBordersEnabled)
+                    {
+                        graphics.DrawPolygon(Pens.Gray, voronoiCellPolygon);
+                    }
                 }
             }
         }

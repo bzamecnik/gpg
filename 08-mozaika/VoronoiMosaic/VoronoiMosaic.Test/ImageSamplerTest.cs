@@ -61,9 +61,8 @@ namespace VoronoiMosaic.Test
         public void VoronoiVisualize()
         {
             SampledImage sampledImage = SampleImage(new UniformImageSampler());
-            SaveSamplesToFile(sampledImage, "uniform_delaunay");
-            ReconstructImage(sampledImage,
-                new VoronoiVisualizer(), "uniform_delaunay");
+            //SaveSamplesToFile(sampledImage, "uniform_voronoi");
+            ReconstructImage(sampledImage, new VoronoiVisualizer(), "uniform_voronoi");
         }
 
         [Fact]

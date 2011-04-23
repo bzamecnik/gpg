@@ -4,16 +4,27 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using OpenTK;
+using System.Drawing;
 
 namespace VoronoiMosaic
 {
     public class SampledImage
     {
+        /// <summary>
+        /// Set of image samples.
+        /// </summary>
         public ICollection<ImageSample> Samples { get; private set; }
+
+        /// <summary>
+        /// Map of samples indexed by their integer position.
+        /// </summary>
+        public Dictionary<Point, ImageSample> SampleMap { get; private set; }
 
         public SampledImage()
         {
             Samples = new HashSet<ImageSample>();
+            SampleMap = new Dictionary<Point, ImageSample>();
         }
 
         public int Width { get; set; }
@@ -22,6 +33,11 @@ namespace VoronoiMosaic
 
         public void AddSample(ImageSample sample) {
             Samples.Add(sample);
+            Point samplePos = new Point(sample.X, sample.Y);
+            if (!SampleMap.ContainsKey(samplePos))
+            {
+                SampleMap.Add(samplePos, sample);
+            }
         }
 
         public void SaveToFile(string fileName) {
