@@ -8,7 +8,7 @@ using Poly2Tri;
 
 namespace VoronoiMosaic
 {
-    public class DelaunayVisualizer : ISampledImageVisualizer
+    public class VoronoiVisualizer : ISampledImageVisualizer
     {
         public bool VoronoiCellsEnabled { get; set; }
         public bool DelaunayTrianglesEnabled { get; set; }
@@ -17,7 +17,7 @@ namespace VoronoiMosaic
 
         Random random = new Random();
 
-        public DelaunayVisualizer()
+        public VoronoiVisualizer()
         {
             VoronoiCellsEnabled = true;
         }

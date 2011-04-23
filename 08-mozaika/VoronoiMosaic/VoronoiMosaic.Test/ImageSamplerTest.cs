@@ -63,7 +63,7 @@ namespace VoronoiMosaic.Test
             SampledImage sampledImage = SampleImage(new UniformImageSampler());
             SaveSamplesToFile(sampledImage, "uniform_delaunay");
             ReconstructImage(sampledImage,
-                new DelaunayVisualizer(), "uniform_delaunay");
+                new VoronoiVisualizer(), "uniform_delaunay");
         }
 
         [Fact]
@@ -80,7 +80,7 @@ namespace VoronoiMosaic.Test
         public void TestCircumscribedCircles()
         {
             SampledImage sampledImage = SampledImage.LoadFromFile(RESULTS_DIR + "delaunay.txt");
-            ISampledImageVisualizer visualizer = new DelaunayVisualizer();
+            ISampledImageVisualizer visualizer = new VoronoiVisualizer();
             Bitmap reconstructedImage = visualizer.ReconstructImage(sampledImage);
             reconstructedImage.Save(string.Format("{0}circumscribed.png", RESULTS_DIR));
         }
