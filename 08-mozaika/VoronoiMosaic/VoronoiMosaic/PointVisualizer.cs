@@ -20,6 +20,10 @@ namespace VoronoiMosaic
                 graphics.FillRectangle(Brushes.Black, 0, 0, width, height);
             }
 
+            // TODO:
+            // - directly write into the image via pointers
+            //   - at least for RGBA images
+
             foreach(ImageSample sample in sampledImage.Samples)
             {
                 image.SetPixel(sample.X, sample.Y, sample.color);

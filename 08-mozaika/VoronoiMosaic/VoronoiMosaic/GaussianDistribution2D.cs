@@ -14,6 +14,11 @@ namespace VoronoiMosaic
             Next2D(0, 0, 1, out x, out y);
         }
 
+        // TODO:
+        // - make static
+        // - accept Random as a parameter
+        // - return OpenTK.Vector2d
+
         /// <summary>
         /// Generate a 2D random vector from Gaussian distribution using the
         /// Box-Muller Transform.
@@ -38,6 +43,21 @@ namespace VoronoiMosaic
             // random numbers from ordinary normal distribution normal(mean, stdDev^2)
             x = meanX + stdDev * randStdNormalX;
             y = meanY + stdDev * randStdNormalY;
+        }
+
+        public double Next()
+        {
+            return Next(0, 1);
+        }
+
+        public double Next(double mean, double stdDev)
+        {
+            double uniformX = random.NextDouble();
+            double uniformY = random.NextDouble();
+            double prefix = Math.Sqrt(-2.0 * Math.Log(uniformX));
+            double uniformY2Pi = 2.0 * Math.PI * uniformY;
+            double randStdNormal = prefix * Math.Cos(uniformY2Pi);
+            return mean + stdDev * randStdNormal;
         }
     }
 }

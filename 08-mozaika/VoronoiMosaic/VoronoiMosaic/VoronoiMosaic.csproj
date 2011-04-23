@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConversionExtensions.cs" />
+    <Compile Include="HybridGaussianImageSampler.cs" />
     <Compile Include="GaussianDistribution2D.cs" />
     <Compile Include="GaussianImageSampler.cs" />
     <Compile Include="IImageSampler.cs" />

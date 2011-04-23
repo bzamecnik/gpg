@@ -21,6 +21,10 @@ namespace VoronoiMosaic.GUI
 
         UniformImageSampler uniformSampler = new UniformImageSampler();
         GaussianImageSampler gaussianSampler = new GaussianImageSampler();
+        HybridGaussianImageSampler hybridGaussianSampler = new HybridGaussianImageSampler()
+        {
+            ClusterCount = 10
+        };
 
         ISampledImageVisualizer visualizer;
         IImageSampler imageSampler;
@@ -32,7 +36,7 @@ namespace VoronoiMosaic.GUI
             InitializeComponent();
 
             visualizer = voronoiVisualizer;
-            imageSampler = uniformSampler;
+            imageSampler = hybridGaussianSampler;
 
             SetVoronoiVisualizerOptions();
 
@@ -62,6 +66,10 @@ namespace VoronoiMosaic.GUI
 
         private void SampleImage()
         {
+            if (originalImage == null)
+            {
+                return;
+            }
             sampledImage = imageSampler.SampleImage(originalImage, (int)sampleCountNumeric.Value);
         }
 
