@@ -35,8 +35,11 @@ namespace VoronoiMosaic.GUI
         {
             InitializeComponent();
 
+            this.samplerTypeComboBox.DataSource = System.Enum.GetValues(typeof(ImageSamplerType));
+            this.imageVisualizerComboBox.DataSource = System.Enum.GetValues(typeof(VisualizerType));
+
             visualizer = voronoiVisualizer;
-            imageSampler = hybridGaussianSampler;
+            imageSampler = uniformSampler;
 
             SetVoronoiVisualizerOptions();
 
@@ -127,7 +130,6 @@ namespace VoronoiMosaic.GUI
         private void loadButton_Click(object sender, EventArgs e)
         {
             originalImageOpenFileDialog.ShowDialog();
-            imageTabControl.SelectedIndex = 0;
         }
 
         private void originalImageOpenFileDialog_FileOk(object sender, CancelEventArgs e)
@@ -138,6 +140,7 @@ namespace VoronoiMosaic.GUI
             }
             originalImage = (Bitmap)Bitmap.FromFile(originalImageOpenFileDialog.FileName);
             SetPictureBoxImage(originalPictureBox, originalImage);
+            imageTabControl.SelectedIndex = 0;
         }
 
         private void sampleImageButton_Click(object sender, EventArgs e)
@@ -183,5 +186,52 @@ namespace VoronoiMosaic.GUI
         }
 
         #endregion
+
+        enum VisualizerType
+        {
+            Voronoi,
+            Point,
+        }
+
+        enum ImageSamplerType
+        {
+            Uniform,
+            Gaussian,
+            [Description("Uniform Gaussian clusters")]
+            HybridGaussianUniform,
+        }
+
+        private void samplerTypeComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            switch ((ImageSamplerType)samplerTypeComboBox.SelectedValue)
+            {
+                case ImageSamplerType.Uniform:
+                    imageSampler = uniformSampler;
+                    break;
+                case ImageSamplerType.Gaussian:
+                    imageSampler = gaussianSampler;
+                    break;
+                case ImageSamplerType.HybridGaussianUniform:
+                    imageSampler = hybridGaussianSampler;
+                    break;
+                default:
+                    throw new NotImplementedException();
+            }
+        }
+
+        private void imageVisualizerComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            switch ((VisualizerType)imageVisualizerComboBox.SelectedValue)
+            {
+                case VisualizerType.Voronoi:
+                    visualizer = voronoiVisualizer;
+                    break;
+                case VisualizerType.Point:
+                    visualizer = pointVisualizer;
+                    break;
+                default:
+                    throw new NotImplementedException();
+            }
+        }
     }
 }

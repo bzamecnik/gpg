@@ -291,13 +291,11 @@
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.imageVisualizerComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.imageVisualizerComboBox.FormattingEnabled = true;
-            this.imageVisualizerComboBox.Items.AddRange(new object[] {
-            "Voronoi cells",
-            "Point samples"});
             this.imageVisualizerComboBox.Location = new System.Drawing.Point(61, 19);
             this.imageVisualizerComboBox.Name = "imageVisualizerComboBox";
             this.imageVisualizerComboBox.Size = new System.Drawing.Size(147, 21);
             this.imageVisualizerComboBox.TabIndex = 5;
+            this.imageVisualizerComboBox.SelectedIndexChanged += new System.EventHandler(this.imageVisualizerComboBox_SelectedIndexChanged);
             // 
             // groupBox2
             // 
@@ -370,14 +368,11 @@
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.samplerTypeComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.samplerTypeComboBox.FormattingEnabled = true;
-            this.samplerTypeComboBox.Items.AddRange(new object[] {
-            "Uniform",
-            "Gaussian",
-            "Uniform gaussian clusters"});
             this.samplerTypeComboBox.Location = new System.Drawing.Point(61, 20);
             this.samplerTypeComboBox.Name = "samplerTypeComboBox";
             this.samplerTypeComboBox.Size = new System.Drawing.Size(147, 21);
             this.samplerTypeComboBox.TabIndex = 0;
+            this.samplerTypeComboBox.SelectedIndexChanged += new System.EventHandler(this.samplerTypeComboBox_SelectedIndexChanged);
             // 
             // groupBox1
             // 
