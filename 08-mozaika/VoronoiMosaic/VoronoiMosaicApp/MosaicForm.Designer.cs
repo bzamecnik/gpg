@@ -68,7 +68,9 @@
             this.sampledImageOpenFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.sampledImageSaveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.backgroundWorker = new System.ComponentModel.BackgroundWorker();
-            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.statusStrip = new System.Windows.Forms.StatusStrip();
+            this.label5 = new System.Windows.Forms.Label();
+            this.samplingClusterCountNumeric = new System.Windows.Forms.NumericUpDown();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
@@ -83,6 +85,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.originalPictureBox)).BeginInit();
             this.reconstructedImagetabPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.reconstructedPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.samplingClusterCountNumeric)).BeginInit();
             this.SuspendLayout();
             // 
             // splitContainer1
@@ -107,7 +110,7 @@
             // 
             this.splitContainer1.Panel2.Controls.Add(this.progressBar1);
             this.splitContainer1.Panel2.Controls.Add(this.imageTabControl);
-            this.splitContainer1.Size = new System.Drawing.Size(869, 599);
+            this.splitContainer1.Size = new System.Drawing.Size(869, 629);
             this.splitContainer1.SplitterDistance = 220;
             this.splitContainer1.TabIndex = 0;
             // 
@@ -118,7 +121,7 @@
             this.groupBox5.Controls.Add(this.label4);
             this.groupBox5.Controls.Add(this.imageSizeStretchButton);
             this.groupBox5.Controls.Add(this.imageSizeOriginalButton);
-            this.groupBox5.Location = new System.Drawing.Point(3, 549);
+            this.groupBox5.Location = new System.Drawing.Point(3, 580);
             this.groupBox5.Name = "groupBox5";
             this.groupBox5.Size = new System.Drawing.Size(214, 46);
             this.groupBox5.TabIndex = 13;
@@ -168,7 +171,7 @@
             this.visualizationGroupBox.Controls.Add(this.label3);
             this.visualizationGroupBox.Controls.Add(this.sampleAndReconstructImageButton);
             this.visualizationGroupBox.Controls.Add(this.imageVisualizerComboBox);
-            this.visualizationGroupBox.Location = new System.Drawing.Point(3, 253);
+            this.visualizationGroupBox.Location = new System.Drawing.Point(3, 284);
             this.visualizationGroupBox.Name = "visualizationGroupBox";
             this.visualizationGroupBox.Size = new System.Drawing.Size(214, 290);
             this.visualizationGroupBox.TabIndex = 2;
@@ -314,6 +317,8 @@
             // 
             this.samplingGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
+            this.samplingGroupBox.Controls.Add(this.label5);
+            this.samplingGroupBox.Controls.Add(this.samplingClusterCountNumeric);
             this.samplingGroupBox.Controls.Add(this.label2);
             this.samplingGroupBox.Controls.Add(this.label1);
             this.samplingGroupBox.Controls.Add(this.sampleCountNumeric);
@@ -321,7 +326,7 @@
             this.samplingGroupBox.Controls.Add(this.samplerTypeComboBox);
             this.samplingGroupBox.Location = new System.Drawing.Point(3, 147);
             this.samplingGroupBox.Name = "samplingGroupBox";
-            this.samplingGroupBox.Size = new System.Drawing.Size(214, 100);
+            this.samplingGroupBox.Size = new System.Drawing.Size(214, 131);
             this.samplingGroupBox.TabIndex = 1;
             this.samplingGroupBox.TabStop = false;
             this.samplingGroupBox.Text = "Image sampling";
@@ -367,7 +372,7 @@
             // 
             this.sampleImageButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.sampleImageButton.Location = new System.Drawing.Point(9, 73);
+            this.sampleImageButton.Location = new System.Drawing.Point(9, 99);
             this.sampleImageButton.Name = "sampleImageButton";
             this.sampleImageButton.Size = new System.Drawing.Size(199, 23);
             this.sampleImageButton.TabIndex = 1;
@@ -454,7 +459,7 @@
             // 
             this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.progressBar1.Location = new System.Drawing.Point(3, 573);
+            this.progressBar1.Location = new System.Drawing.Point(3, 603);
             this.progressBar1.MarqueeAnimationSpeed = 10;
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(639, 23);
@@ -471,7 +476,7 @@
             this.imageTabControl.Name = "imageTabControl";
             this.imageTabControl.Padding = new System.Drawing.Point(0, 0);
             this.imageTabControl.SelectedIndex = 0;
-            this.imageTabControl.Size = new System.Drawing.Size(639, 566);
+            this.imageTabControl.Size = new System.Drawing.Size(639, 596);
             this.imageTabControl.TabIndex = 0;
             // 
             // originalImageTabPage
@@ -483,7 +488,7 @@
             this.originalImageTabPage.Location = new System.Drawing.Point(4, 22);
             this.originalImageTabPage.Margin = new System.Windows.Forms.Padding(0);
             this.originalImageTabPage.Name = "originalImageTabPage";
-            this.originalImageTabPage.Size = new System.Drawing.Size(631, 540);
+            this.originalImageTabPage.Size = new System.Drawing.Size(631, 570);
             this.originalImageTabPage.TabIndex = 0;
             this.originalImageTabPage.Text = "Original image";
             this.originalImageTabPage.Resize += new System.EventHandler(this.originalImageTabPage_Resize);
@@ -495,7 +500,7 @@
             this.originalPictureBox.Location = new System.Drawing.Point(0, 0);
             this.originalPictureBox.Margin = new System.Windows.Forms.Padding(0);
             this.originalPictureBox.Name = "originalPictureBox";
-            this.originalPictureBox.Size = new System.Drawing.Size(629, 538);
+            this.originalPictureBox.Size = new System.Drawing.Size(629, 568);
             this.originalPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
             this.originalPictureBox.TabIndex = 0;
             this.originalPictureBox.TabStop = false;
@@ -508,7 +513,7 @@
             this.reconstructedImagetabPage.Location = new System.Drawing.Point(4, 22);
             this.reconstructedImagetabPage.Margin = new System.Windows.Forms.Padding(0);
             this.reconstructedImagetabPage.Name = "reconstructedImagetabPage";
-            this.reconstructedImagetabPage.Size = new System.Drawing.Size(631, 542);
+            this.reconstructedImagetabPage.Size = new System.Drawing.Size(631, 540);
             this.reconstructedImagetabPage.TabIndex = 1;
             this.reconstructedImagetabPage.Text = "Reconstructed image";
             this.reconstructedImagetabPage.Resize += new System.EventHandler(this.reconstructedImageTabPage_Resize);
@@ -518,7 +523,7 @@
             this.reconstructedPictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.reconstructedPictureBox.Location = new System.Drawing.Point(0, 0);
             this.reconstructedPictureBox.Name = "reconstructedPictureBox";
-            this.reconstructedPictureBox.Size = new System.Drawing.Size(629, 540);
+            this.reconstructedPictureBox.Size = new System.Drawing.Size(629, 538);
             this.reconstructedPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
             this.reconstructedPictureBox.TabIndex = 0;
             this.reconstructedPictureBox.TabStop = false;
@@ -550,23 +555,53 @@
             // 
             // backgroundWorker
             // 
+            this.backgroundWorker.WorkerReportsProgress = true;
             this.backgroundWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker_DoWork);
             this.backgroundWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker_RunWorkerCompleted);
+            this.backgroundWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker_ProgressChanged);
             // 
-            // statusStrip1
+            // statusStrip
             // 
-            this.statusStrip1.Location = new System.Drawing.Point(0, 602);
-            this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(869, 22);
-            this.statusStrip1.TabIndex = 0;
-            this.statusStrip1.Text = "statusStrip1";
+            this.statusStrip.Location = new System.Drawing.Point(0, 632);
+            this.statusStrip.Name = "statusStrip";
+            this.statusStrip.Size = new System.Drawing.Size(869, 22);
+            this.statusStrip.TabIndex = 0;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(9, 75);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(98, 13);
+            this.label5.TabIndex = 6;
+            this.label5.Text = "Number of clusters:";
+            // 
+            // samplingClusterCountNumeric
+            // 
+            this.samplingClusterCountNumeric.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.samplingClusterCountNumeric.Location = new System.Drawing.Point(115, 73);
+            this.samplingClusterCountNumeric.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.samplingClusterCountNumeric.Name = "samplingClusterCountNumeric";
+            this.samplingClusterCountNumeric.Size = new System.Drawing.Size(93, 20);
+            this.samplingClusterCountNumeric.TabIndex = 5;
+            this.samplingClusterCountNumeric.Value = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.samplingClusterCountNumeric.ValueChanged += new System.EventHandler(this.samplingClusterCountNumeric_ValueChanged);
             // 
             // MosaicForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(869, 624);
-            this.Controls.Add(this.statusStrip1);
+            this.ClientSize = new System.Drawing.Size(869, 654);
+            this.Controls.Add(this.statusStrip);
             this.Controls.Add(this.splitContainer1);
             this.Name = "MosaicForm";
             this.Text = "Voronoi mosaic - Bohumír Zámečník - MFF UK - 2011 - uses poly2tri-cs library";
@@ -590,6 +625,7 @@
             this.reconstructedImagetabPage.ResumeLayout(false);
             this.reconstructedImagetabPage.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.reconstructedPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.samplingClusterCountNumeric)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -637,7 +673,9 @@
         private System.Windows.Forms.SaveFileDialog sampledImageSaveFileDialog;
         private System.Windows.Forms.CheckBox cacheTriangulationCheckBox;
         private System.ComponentModel.BackgroundWorker backgroundWorker;
-        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.StatusStrip statusStrip;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.NumericUpDown samplingClusterCountNumeric;
     }
 }
 

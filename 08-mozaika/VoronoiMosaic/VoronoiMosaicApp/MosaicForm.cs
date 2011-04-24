@@ -19,18 +19,18 @@ namespace VoronoiMosaic.GUI
         SampledImage sampledImage;
         Bitmap reconstructedImage;
 
-        VoronoiVisualizer voronoiVisualizer = new VoronoiVisualizer();
-        PointVisualizer pointVisualizer = new PointVisualizer();
+        VoronoiVisualizer voronoiVisualizer;
+        PointVisualizer pointVisualizer;
 
-        UniformImageSampler uniformSampler = new UniformImageSampler();
-        GaussianImageSampler gaussianSampler = new GaussianImageSampler();
-        HybridGaussianImageSampler hybridGaussianSampler = new HybridGaussianImageSampler()
-        {
-            ClusterCount = 10
-        };
+        UniformImageSampler uniformSampler;
+        GaussianImageSampler gaussianSampler;
+        HybridGaussianImageSampler hybridGaussianSampler;
 
         ISampledImageVisualizer visualizer;
         IImageSampler imageSampler;
+
+        ProgressReporter samplingProgress = new ProgressReporter();
+        ProgressReporter reconstructionProgress = new ProgressReporter();
 
         bool shouldZoomPictureBoxes = true;
 
@@ -38,16 +38,36 @@ namespace VoronoiMosaic.GUI
         {
             InitializeComponent();
 
-            this.samplerTypeComboBox.DataSource = System.Enum.GetValues(typeof(ImageSamplerType));
-            this.imageVisualizerComboBox.DataSource = System.Enum.GetValues(typeof(VisualizerType));
+            uniformSampler = new UniformImageSampler(samplingProgress);
+            gaussianSampler = new GaussianImageSampler(samplingProgress);
+            hybridGaussianSampler = new HybridGaussianImageSampler(samplingProgress)
+            {
+                ClusterCount = 10
+            };
+
+            voronoiVisualizer = new VoronoiVisualizer(reconstructionProgress);
+            pointVisualizer = new PointVisualizer(reconstructionProgress);
 
             visualizer = voronoiVisualizer;
             imageSampler = uniformSampler;
 
             SetVoronoiVisualizerOptions();
 
+            this.samplerTypeComboBox.DataSource = System.Enum.GetValues(typeof(ImageSamplerType));
+            this.imageVisualizerComboBox.DataSource = System.Enum.GetValues(typeof(VisualizerType));
+
             samplerTypeComboBox.SelectedIndex = 0;
             imageVisualizerComboBox.SelectedIndex = 0;
+
+            samplingProgress.ProgressChanged += ReportProgress;
+            reconstructionProgress.ProgressChanged += ReportProgress;
+        }
+
+        #region Private methods
+
+        private void ReportProgress(int progress)
+        {
+            backgroundWorker.ReportProgress(progress, progress == 0);
         }
 
         private void SetVoronoiVisualizerOptions()
@@ -105,6 +125,78 @@ namespace VoronoiMosaic.GUI
             }
         }
 
+        private ImageFormat GetFormatFromFileName(string fileName)
+        {
+            string fileNameLower = fileName.ToLower();
+            if (fileNameLower.EndsWith(".png"))
+            {
+                return ImageFormat.Png;
+            }
+            else if (fileNameLower.EndsWith(".jpg") || fileNameLower.EndsWith(".jpeg"))
+            {
+                return ImageFormat.Jpeg;
+            }
+            else if (fileNameLower.EndsWith(".gif"))
+            {
+                return ImageFormat.Gif;
+            }
+            else if (fileNameLower.EndsWith(".tif") || fileNameLower.EndsWith(".tiff"))
+            {
+                return ImageFormat.Tiff;
+            }
+            else if (fileNameLower.EndsWith(".bmp"))
+            {
+                return ImageFormat.Bmp;
+            }
+            return ImageFormat.Png;
+        }
+
+        private string GetDefaultSampledImageFileName()
+        {
+            return System.IO.Path.GetFileNameWithoutExtension(
+                originalImageOpenFileDialog.FileName) + ".txt";
+        }
+
+        private void SetControlsEnabled(bool enabled)
+        {
+            samplingGroupBox.Enabled = enabled;
+            visualizationGroupBox.Enabled = enabled;
+        }
+
+        #endregion
+
+        #region Inner classes and enums
+
+        enum VisualizerType
+        {
+            Voronoi,
+            Point,
+        }
+
+        enum ImageSamplerType
+        {
+            Uniform,
+            Gaussian,
+            [Description("Uniform Gaussian clusters")]
+            HybridGaussianUniform,
+        }
+
+        class BackgroundWorkerArguments
+        {
+            public int sampleCount;
+            public bool sample;
+            public bool reconstruct;
+
+            public BackgroundWorkerArguments(int sampleCount, bool sample, bool reconstruct)
+            {
+                this.sampleCount = sampleCount;
+                this.sample = sample;
+                this.reconstruct = reconstruct;
+            }
+        }
+
+        #endregion
+
         #region Event handlers
 
         private void loadButton_Click(object sender, EventArgs e)
@@ -134,12 +226,6 @@ namespace VoronoiMosaic.GUI
             }
         }
 
-        private string GetDefaultSampledImageFileName()
-        {
-            return System.IO.Path.GetFileNameWithoutExtension(
-                originalImageOpenFileDialog.FileName) + ".txt";
-        }
-
         private void originalImageOpenFileDialog_FileOk(object sender, CancelEventArgs e)
         {
             if (originalImage != null)
@@ -155,6 +241,7 @@ namespace VoronoiMosaic.GUI
             originalImageToShow = (Bitmap)Bitmap.FromFile(originalImageOpenFileDialog.FileName);
             SetPictureBoxImage(originalPictureBox, originalImageToShow);
             imageTabControl.SelectedIndex = 0;
+            progressBar1.Value = 0;
         }
 
         private void reconstructedImageSaveFileDialog_FileOk(object sender, CancelEventArgs e)
@@ -167,10 +254,10 @@ namespace VoronoiMosaic.GUI
             reconstructedImage.Save(fileName, GetFormatFromFileName(fileName));
         }
 
-
         private void sampledImageOpenFileDialog_FileOk(object sender, CancelEventArgs e)
         {
             sampledImage = SampledImage.LoadFromFile(sampledImageOpenFileDialog.FileName);
+            progressBar1.Value = 0;
         }
 
         private void sampledImageSaveFileDialog_FileOk(object sender, CancelEventArgs e)
@@ -182,32 +269,6 @@ namespace VoronoiMosaic.GUI
             sampledImage.SaveToFile(sampledImageSaveFileDialog.FileName);
         }
 
-        private ImageFormat GetFormatFromFileName(string fileName)
-        {
-            string fileNameLower = fileName.ToLower();
-            if (fileNameLower.EndsWith(".png"))
-            {
-                return ImageFormat.Png;
-            }
-            else if (fileNameLower.EndsWith(".jpg") || fileNameLower.EndsWith(".jpeg"))
-            {
-                return ImageFormat.Jpeg;
-            }
-            else if (fileNameLower.EndsWith(".gif"))
-            {
-                return ImageFormat.Gif;
-            }
-            else if (fileNameLower.EndsWith(".tif") || fileNameLower.EndsWith(".tiff"))
-            {
-                return ImageFormat.Tiff;
-            }
-            else if (fileNameLower.EndsWith(".bmp"))
-            {
-                return ImageFormat.Bmp;
-            }
-            return ImageFormat.Png;
-        }
-
         private void sampleImageButton_Click(object sender, EventArgs e)
         {
             if ((originalImage == null) || backgroundWorker.IsBusy)
@@ -215,8 +276,7 @@ namespace VoronoiMosaic.GUI
                 return;
             }
             SetControlsEnabled(false);
-            progressBar1.Value = 0;
-            progressBar1.Style = ProgressBarStyle.Marquee;
+            //progressBar1.Style = ProgressBarStyle.Marquee;
             backgroundWorker.RunWorkerAsync(new BackgroundWorkerArguments(
                 (int)sampleCountNumeric.Value, true, false));
         }
@@ -229,8 +289,7 @@ namespace VoronoiMosaic.GUI
             }
             GetVoronoiVisualizerOptions();
             SetControlsEnabled(false);
-            progressBar1.Value = 0;
-            progressBar1.Style = ProgressBarStyle.Marquee;
+            //progressBar1.Style = ProgressBarStyle.Marquee;
             backgroundWorker.RunWorkerAsync(new BackgroundWorkerArguments(0, false, true));
         }
 
@@ -242,8 +301,7 @@ namespace VoronoiMosaic.GUI
             }
             GetVoronoiVisualizerOptions();
             SetControlsEnabled(false);
-            progressBar1.Value = 0;
-            progressBar1.Style = ProgressBarStyle.Marquee;
+            //progressBar1.Style = ProgressBarStyle.Marquee;
             backgroundWorker.RunWorkerAsync(new BackgroundWorkerArguments(
                (int)sampleCountNumeric.Value, true, true));
         }
@@ -272,22 +330,6 @@ namespace VoronoiMosaic.GUI
         private void reconstructedImageTabPage_Resize(object sender, EventArgs e)
         {
             SetPictureBoxSize(reconstructedPictureBox);
-        }
-
-        #endregion
-
-        enum VisualizerType
-        {
-            Voronoi,
-            Point,
-        }
-
-        enum ImageSamplerType
-        {
-            Uniform,
-            Gaussian,
-            [Description("Uniform Gaussian clusters")]
-            HybridGaussianUniform,
         }
 
         private void samplerTypeComboBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -323,22 +365,9 @@ namespace VoronoiMosaic.GUI
             }
         }
 
-        class BackgroundWorkerArguments
-        {
-            public int sampleCount;
-            public bool sample;
-            public bool reconstruct;
-
-            public BackgroundWorkerArguments(int sampleCount, bool sample, bool reconstruct)
-            {
-                this.sampleCount = sampleCount;
-                this.sample = sample;
-                this.reconstruct = reconstruct;
-            }
-        }
-
         private void backgroundWorker_DoWork(object sender, DoWorkEventArgs e)
         {
+            backgroundWorker.ReportProgress(0);
             BackgroundWorkerArguments args = (BackgroundWorkerArguments)e.Argument;
             if (args.sample)
             {
@@ -348,6 +377,7 @@ namespace VoronoiMosaic.GUI
             {
                 e.Result = visualizer.ReconstructImage(sampledImage);
             }
+            backgroundWorker.ReportProgress(100);
         }
 
         private void backgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -363,14 +393,25 @@ namespace VoronoiMosaic.GUI
                 imageTabControl.SelectedIndex = 1;
             }
             SetControlsEnabled(true);
-            progressBar1.Value = 100;
-            progressBar1.Style = ProgressBarStyle.Blocks;
+            //progressBar1.Style = ProgressBarStyle.Blocks;
         }
 
-        private void SetControlsEnabled(bool enabled)
+        private void backgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            samplingGroupBox.Enabled = enabled;
-            visualizationGroupBox.Enabled = enabled;
+            progressBar1.Value = e.ProgressPercentage;
+            bool? marqueeEnabled = e.UserState as bool?;
+            if (marqueeEnabled.HasValue)
+            {
+                progressBar1.Style = (marqueeEnabled.Value) ?
+                    ProgressBarStyle.Marquee : ProgressBarStyle.Blocks;
+            }
+        }
+
+        #endregion
+
+        private void samplingClusterCountNumeric_ValueChanged(object sender, EventArgs e)
+        {
+            hybridGaussianSampler.ClusterCount = (int)samplingClusterCountNumeric.Value;
         }
     }
 }

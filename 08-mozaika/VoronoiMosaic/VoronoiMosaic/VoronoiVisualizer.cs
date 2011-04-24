@@ -17,6 +17,7 @@ namespace VoronoiMosaic
         public bool DelaunayCircumcirclesEnabled { get; set; }
         public bool AntiAliasingEnabled { get; set; }
         public bool TriangulationCachingEnabled { get; set; }
+        public ProgressReporter Progress { get; private set; }
 
         private Random random = new Random();
 
@@ -27,9 +28,15 @@ namespace VoronoiMosaic
         private PointSet previousTriMesh;
 
         public VoronoiVisualizer()
+            : this(new ProgressReporter())
+        {
+        }
+
+        public VoronoiVisualizer(ProgressReporter progress)
         {
             VoronoiCellsEnabled = true;
             TriangulationCachingEnabled = true;
+            Progress = progress;
         }
 
         public Bitmap ReconstructImage(SampledImage sampledImage)
@@ -38,12 +45,16 @@ namespace VoronoiMosaic
             int height = sampledImage.Height;
             Bitmap image = new Bitmap(width, height);
 
+            Progress.ReportProgress(0);
+
             // use cached triangulation if possible
             PointSet triMesh =
                 (TriangulationCachingEnabled && sampledImage.Equals(previousSampledImage)) ?
                     previousTriMesh : VoronoiHelper.MakeDelaunayTriangulation(sampledImage);
             previousTriMesh = triMesh;
             previousSampledImage = sampledImage;
+
+            Progress.ReportProgress(25);
 
             using (Graphics graphics = Graphics.FromImage(image))
             {
@@ -59,12 +70,18 @@ namespace VoronoiMosaic
                     DrawVoronoiCells(triMesh, graphics, sampledImage);
                 }
 
+                Progress.ReportProgress(50);
+
                 if (DelaunayTrianglesEnabled)
                 {
                     DrawDelaunayTriangles(triMesh, graphics);
                 }
 
+                Progress.ReportProgress(75);
+
                 DrawAdditionalFeatures(width, height, triMesh, graphics);
+
+                Progress.ReportProgress(100);
             }
 
             return image;
@@ -72,17 +89,32 @@ namespace VoronoiMosaic
 
         private void DrawDelaunayTriangles(PointSet triMesh, Graphics graphics)
         {
+            int samplePercent = 4 * triMesh.Triangles.Count / 100;
+            int trianglesDone = 0;
+            int percentDone = 0;
+
             foreach (DelaunayTriangle triangle in triMesh.Triangles)
             {
                 // draw Delaunay triangulation
                 PointF[] points = triangle.ToPointFArray();
                 graphics.DrawPolygon(Pens.Black, points);
                 //graphics.FillPolygon(new Brush(), points);
+
+                trianglesDone++;
+                if ((samplePercent > 500) && (trianglesDone % samplePercent == 0))
+                {
+                    percentDone++;
+                    Progress.ReportProgress(50 + percentDone);
+                }
             }
         }
 
         private void DrawVoronoiCells(PointSet triMesh, Graphics graphics, SampledImage sampledImage)
         {
+            int samplePercent = 4 * triMesh.Triangles.Count / 100;
+            int trianglesDone = 0;
+            int percentDone = 0;
+
             // Voronoi cell which have already been drawn onto the image
             HashSet<Vector2> drawnVoronoiCells = new HashSet<Vector2>();
 
@@ -129,11 +161,21 @@ namespace VoronoiMosaic
                         graphics.DrawPolygon(Pens.Gray, voronoiCellPolygon);
                     }
                 }
+                trianglesDone++;
+                if ((samplePercent > 500) && (trianglesDone % samplePercent == 0))
+                {
+                    percentDone++;
+                    Progress.ReportProgress(25 + percentDone);
+                }
             }
         }
 
         private void DrawAdditionalFeatures(int width, int height, PointSet triMesh, Graphics graphics)
         {
+            int samplePercent = 4 * triMesh.Triangles.Count / 100;
+            int trianglesDone = 0;
+            int percentDone = 0;
+
             if (VoronoiVerticesEnabled || DelaunayCircumcirclesEnabled)
             {
                 foreach (DelaunayTriangle triangle in triMesh.Triangles)
@@ -147,6 +189,13 @@ namespace VoronoiMosaic
                     if (DelaunayCircumcirclesEnabled)
                     {
                         DrawDelaunayCircumcircles(triangle, voronoiVertex, graphics);
+                    }
+
+                    trianglesDone++;
+                    if ((samplePercent > 500) && (trianglesDone % samplePercent == 0))
+                    {
+                        percentDone++;
+                        Progress.ReportProgress(75 + percentDone);
                     }
                 }
             }
