@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Windows.Forms;
-using VoronoiMosaic;
 
 namespace VoronoiMosaic.GUI
 {
@@ -22,7 +18,7 @@ namespace VoronoiMosaic.GUI
         Bitmap originalImageToShow;
         SampledImage sampledImage;
         Bitmap reconstructedImage;
-        
+
         VoronoiVisualizer voronoiVisualizer = new VoronoiVisualizer();
         PointVisualizer pointVisualizer = new PointVisualizer();
 
@@ -74,36 +70,6 @@ namespace VoronoiMosaic.GUI
             voronoiVisualizer.VoronoiVerticesEnabled = showVoronoiVerticesCheckBox.Checked;
             voronoiVisualizer.AntiAliasingEnabled = enableAntialiasingCheckBox.Checked;
             voronoiVisualizer.TriangulationCachingEnabled = cacheTriangulationCheckBox.Checked;
-        }
-
-        private void SampleImage()
-        {
-            if (originalImage == null)
-            {
-                return;
-            }
-            if (!samplingBackgroundWorker.IsBusy)
-            {
-                sampleImageButton.Enabled = false;
-                samplingBackgroundWorker.RunWorkerAsync(new SamplingWorkerArguments(
-                    originalImage, (int)sampleCountNumeric.Value));
-            }
-        }
-
-        private void ReconstructImage()
-        {
-            if (sampledImage == null)
-            {
-                return;
-            }
-            if (reconstructedImage != null)
-            {
-                reconstructedImage.Dispose();
-            }
-            GetVoronoiVisualizerOptions();
-            reconstructedImage = visualizer.ReconstructImage(sampledImage);
-            SetPictureBoxImage(reconstructedPictureBox, reconstructedImage);
-            imageTabControl.SelectedIndex = 1;
         }
 
         private void SetPictureBoxImage(PictureBox pictureBox, Image image)
@@ -181,6 +147,7 @@ namespace VoronoiMosaic.GUI
                 originalImage.Dispose();
             }
             originalImage = (Bitmap)Bitmap.FromFile(originalImageOpenFileDialog.FileName);
+            sampledImage = null;
             if (originalImageToShow != null)
             {
                 originalImageToShow.Dispose();
@@ -243,18 +210,42 @@ namespace VoronoiMosaic.GUI
 
         private void sampleImageButton_Click(object sender, EventArgs e)
         {
-            SampleImage();
+            if ((originalImage == null) || backgroundWorker.IsBusy)
+            {
+                return;
+            }
+            SetControlsEnabled(false);
+            progressBar1.Value = 0;
+            progressBar1.Style = ProgressBarStyle.Marquee;
+            backgroundWorker.RunWorkerAsync(new BackgroundWorkerArguments(
+                (int)sampleCountNumeric.Value, true, false));
         }
 
         private void reconstructImageButton_Click(object sender, EventArgs e)
         {
-            ReconstructImage();
+            if ((sampledImage == null) || backgroundWorker.IsBusy)
+            {
+                return;
+            }
+            GetVoronoiVisualizerOptions();
+            SetControlsEnabled(false);
+            progressBar1.Value = 0;
+            progressBar1.Style = ProgressBarStyle.Marquee;
+            backgroundWorker.RunWorkerAsync(new BackgroundWorkerArguments(0, false, true));
         }
 
         private void sampleAndReconstructImageButton_Click(object sender, EventArgs e)
         {
-            SampleImage();
-            ReconstructImage();
+            if ((originalImage == null) || backgroundWorker.IsBusy)
+            {
+                return;
+            }
+            GetVoronoiVisualizerOptions();
+            SetControlsEnabled(false);
+            progressBar1.Value = 0;
+            progressBar1.Style = ProgressBarStyle.Marquee;
+            backgroundWorker.RunWorkerAsync(new BackgroundWorkerArguments(
+               (int)sampleCountNumeric.Value, true, true));
         }
 
         private void imageSizeOriginalButton_Click(object sender, EventArgs e)
@@ -332,40 +323,54 @@ namespace VoronoiMosaic.GUI
             }
         }
 
-        private void visualizingBackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
+        class BackgroundWorkerArguments
         {
-           
-        }
-
-        
-
-        private void visualizingBackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            
-        }
-
-        private void samplingBackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
-        {
-            SamplingWorkerArguments args = (SamplingWorkerArguments)e.Argument;
-            e.Result = imageSampler.SampleImage(args.image, args.sampleCount);
-        }
-
-        private void samplingBackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            sampledImage = (SampledImage)e.Result;
-            sampleImageButton.Enabled = true;
-        }
-
-        class SamplingWorkerArguments
-        {
-            public Bitmap image;
             public int sampleCount;
+            public bool sample;
+            public bool reconstruct;
 
-            public SamplingWorkerArguments(Bitmap image, int sampleCount)
+            public BackgroundWorkerArguments(int sampleCount, bool sample, bool reconstruct)
             {
-                this.image = image;
                 this.sampleCount = sampleCount;
+                this.sample = sample;
+                this.reconstruct = reconstruct;
             }
+        }
+
+        private void backgroundWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            BackgroundWorkerArguments args = (BackgroundWorkerArguments)e.Argument;
+            if (args.sample)
+            {
+                sampledImage = imageSampler.SampleImage(originalImage, args.sampleCount);
+            }
+            if (args.reconstruct)
+            {
+                e.Result = visualizer.ReconstructImage(sampledImage);
+            }
+        }
+
+        private void backgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if (e.Result != null)
+            {
+                if (reconstructedImage != null)
+                {
+                    reconstructedImage.Dispose();
+                }
+                reconstructedImage = (Bitmap)e.Result;
+                SetPictureBoxImage(reconstructedPictureBox, reconstructedImage);
+                imageTabControl.SelectedIndex = 1;
+            }
+            SetControlsEnabled(true);
+            progressBar1.Value = 100;
+            progressBar1.Style = ProgressBarStyle.Blocks;
+        }
+
+        private void SetControlsEnabled(bool enabled)
+        {
+            samplingGroupBox.Enabled = enabled;
+            visualizationGroupBox.Enabled = enabled;
         }
     }
 }
