@@ -161,7 +161,7 @@ namespace VoronoiMosaic
                     //Color sampleColor = GetRandomColor();
                     ImageSample imageSample;
                     Color sampleColor = Color.Pink;  // DEBUG
-                    if (sampledImage.SampleMap.TryGetValue(new Point((int)triVertex.X, (int)triVertex.Y), out imageSample))
+                    if (sampledImage.SampleMap.TryGetValue((int)triVertex.Y * sampledImage.Width + (int)triVertex.X, out imageSample))
                     {
                         sampleColor = imageSample.color;
                     }

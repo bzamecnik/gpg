@@ -15,12 +15,12 @@ namespace VoronoiMosaic
         /// <summary>
         /// Map of samples indexed by their integer position.
         /// </summary>
-        public Dictionary<Point, ImageSample> SampleMap { get; private set; }
+        public Dictionary<long, ImageSample> SampleMap { get; private set; }
 
         public SampledImage()
         {
             Samples = new HashSet<ImageSample>();
-            SampleMap = new Dictionary<Point, ImageSample>();
+            SampleMap = new Dictionary<long, ImageSample>();
         }
 
         public int Width { get; set; }
@@ -34,7 +34,7 @@ namespace VoronoiMosaic
             if (diff > 0)
             {
                 // add sample only if it is not a duplicate
-                SampleMap.Add(new Point(sample.X, sample.Y), sample);
+                SampleMap.Add(sample.Y * Width + sample.X, sample);
             }
         }
 
