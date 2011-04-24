@@ -240,6 +240,11 @@ namespace VoronoiMosaic.GUI
             }
             originalImageToShow = (Bitmap)Bitmap.FromFile(originalImageOpenFileDialog.FileName);
             SetPictureBoxImage(originalPictureBox, originalImageToShow);
+            SetPictureBoxImage(reconstructedPictureBox, null);
+            if (reconstructedImage != null)
+            {
+                reconstructedImage.Dispose();
+            }
             imageTabControl.SelectedIndex = 0;
             progressBar1.Value = 0;
         }
@@ -258,6 +263,22 @@ namespace VoronoiMosaic.GUI
         {
             sampledImage = SampledImage.LoadFromFile(sampledImageOpenFileDialog.FileName);
             progressBar1.Value = 0;
+            if (originalImage != null)
+            {
+                originalImage.Dispose();
+                originalImage = null;
+            }
+            SetPictureBoxImage(originalPictureBox, null);
+            if (originalImageToShow != null)
+            {
+                originalImageToShow.Dispose();
+                originalImageToShow = null;
+            }
+            SetPictureBoxImage(reconstructedPictureBox, null);
+            if (reconstructedImage != null)
+            {
+                reconstructedImage.Dispose();
+            }
         }
 
         private void sampledImageSaveFileDialog_FileOk(object sender, CancelEventArgs e)
@@ -276,7 +297,6 @@ namespace VoronoiMosaic.GUI
                 return;
             }
             SetControlsEnabled(false);
-            //progressBar1.Style = ProgressBarStyle.Marquee;
             backgroundWorker.RunWorkerAsync(new BackgroundWorkerArguments(
                 (int)sampleCountNumeric.Value, true, false));
         }
@@ -289,7 +309,6 @@ namespace VoronoiMosaic.GUI
             }
             GetVoronoiVisualizerOptions();
             SetControlsEnabled(false);
-            //progressBar1.Style = ProgressBarStyle.Marquee;
             backgroundWorker.RunWorkerAsync(new BackgroundWorkerArguments(0, false, true));
         }
 
@@ -301,7 +320,6 @@ namespace VoronoiMosaic.GUI
             }
             GetVoronoiVisualizerOptions();
             SetControlsEnabled(false);
-            //progressBar1.Style = ProgressBarStyle.Marquee;
             backgroundWorker.RunWorkerAsync(new BackgroundWorkerArguments(
                (int)sampleCountNumeric.Value, true, true));
         }
@@ -338,12 +356,15 @@ namespace VoronoiMosaic.GUI
             {
                 case ImageSamplerType.Uniform:
                     imageSampler = uniformSampler;
+                    samplingClusterCountNumeric.Enabled = false;
                     break;
                 case ImageSamplerType.Gaussian:
                     imageSampler = gaussianSampler;
+                    samplingClusterCountNumeric.Enabled = false;
                     break;
                 case ImageSamplerType.HybridGaussianUniform:
                     imageSampler = hybridGaussianSampler;
+                    samplingClusterCountNumeric.Enabled = true;
                     break;
                 default:
                     throw new NotImplementedException();
@@ -356,9 +377,11 @@ namespace VoronoiMosaic.GUI
             {
                 case VisualizerType.Voronoi:
                     visualizer = voronoiVisualizer;
+                    voronoiOptionsGroupBox.Enabled = true;
                     break;
                 case VisualizerType.Point:
                     visualizer = pointVisualizer;
+                    voronoiOptionsGroupBox.Enabled = false;
                     break;
                 default:
                     throw new NotImplementedException();
@@ -393,7 +416,6 @@ namespace VoronoiMosaic.GUI
                 imageTabControl.SelectedIndex = 1;
             }
             SetControlsEnabled(true);
-            //progressBar1.Style = ProgressBarStyle.Blocks;
         }
 
         private void backgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
