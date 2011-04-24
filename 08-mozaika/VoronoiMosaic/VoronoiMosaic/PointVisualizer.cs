@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace VoronoiMosaic
 {
@@ -39,14 +40,42 @@ namespace VoronoiMosaic
             int samplePercent = sampledImage.Samples.Count / 100;
             int currentSample = 0;
             int percentDone = 0;
-            foreach(ImageSample sample in sampledImage.Samples)
+
+            if ((image.PixelFormat == PixelFormat.Format32bppArgb) ||
+                (image.PixelFormat == PixelFormat.Format24bppRgb))
             {
-                image.SetPixel(sample.X, sample.Y, sample.color);
-                currentSample++;
-                if ((samplePercent > 500) && (currentSample % samplePercent == 0))
+                // faster, only for BGR or BGRA
+                BitmapData imageData = image.LockBits(new Rectangle(0, 0, width, height),
+                    ImageLockMode.WriteOnly, image.PixelFormat);
+                bool hasAlpha = image.PixelFormat == PixelFormat.Format32bppArgb;
+                int bands =  hasAlpha ? 4 : 3;
+
+                unsafe
                 {
-                    percentDone++;
-                    Progress.ReportProgress(percentDone);
+                    byte* imagePtrBase = (byte*)imageData.Scan0;
+
+                    foreach (ImageSample sample in sampledImage.Samples)
+                    {
+                        byte* imagePtr = imagePtrBase + (sample.Y * imageData.Stride) + sample.X * bands;
+                        imagePtr[0] = sample.color.B;
+                        imagePtr[1] = sample.color.G;
+                        imagePtr[2] = sample.color.R;
+                        if (hasAlpha)
+                        {
+                            imagePtr[3] = sample.color.A;
+                        }
+                        ReportProgress(samplePercent, ref currentSample, ref percentDone);
+                    }
+                }
+                image.UnlockBits(imageData);
+            }
+            else
+            {
+                // slower, more general
+                foreach (ImageSample sample in sampledImage.Samples)
+                {
+                    image.SetPixel(sample.X, sample.Y, sample.color);
+                    ReportProgress(samplePercent, ref currentSample, ref percentDone);
                 }
             }
 
@@ -55,6 +84,16 @@ namespace VoronoiMosaic
             Progress.ReportProgress(100);
 
             return image;
+        }
+
+        private void ReportProgress(int samplePercent, ref int currentSample, ref int percentDone)
+        {
+            currentSample++;
+            if ((samplePercent > 500) && (currentSample % samplePercent == 0))
+            {
+                percentDone++;
+                Progress.ReportProgress(percentDone);
+            }
         }
     }
 }
