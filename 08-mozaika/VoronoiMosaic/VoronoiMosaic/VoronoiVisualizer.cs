@@ -91,7 +91,7 @@ namespace VoronoiMosaic
 
                 Progress.ReportProgress(75);
 
-                DrawAdditionalFeatures(width, height, triMesh, graphics);
+                DrawAdditionalFeatures(width, height, triMesh, graphics, image);
 
                 Progress.ReportProgress(100);
             }
@@ -180,7 +180,7 @@ namespace VoronoiMosaic
             }
         }
 
-        private void DrawAdditionalFeatures(int width, int height, PointSet triMesh, Graphics graphics)
+        private void DrawAdditionalFeatures(int width, int height, PointSet triMesh, Graphics graphics, Bitmap image)
         {
             int samplePercent = 4 * triMesh.Triangles.Count / 100;
             int trianglesDone = 0;
@@ -194,7 +194,7 @@ namespace VoronoiMosaic
                     Vector2 voronoiVertex = VoronoiHelper.GetCircumcenter(triangle);
                     if (VoronoiVerticesEnabled)
                     {
-                        DrawVoronoiVertex(width, height, voronoiVertex, graphics);
+                        DrawVoronoiVertex(width, height, voronoiVertex, graphics, image);
                     }
                     if (DelaunayCircumcirclesEnabled)
                     {
@@ -211,14 +211,14 @@ namespace VoronoiMosaic
             }
         }
 
-        private static void DrawVoronoiVertex(int width, int height, Vector2 voronoiVertex, Graphics graphics)
+        private static void DrawVoronoiVertex(int width, int height, Vector2 voronoiVertex, Graphics graphics, Bitmap image)
         {
-            float x = voronoiVertex.X;
-            float y = voronoiVertex.Y;
+            int x = (int)voronoiVertex.X;
+            int y = (int)voronoiVertex.Y;
             if ((x >= 0) && (x < width) && (y >= 0) && (y < height))
             {
-                //image.SetPixel(x, y, Color.Red);
-                graphics.FillRectangle(Brushes.Red, x - 2, y - 2, 4, 4);
+                //image.SetPixel((int)x, (int)y, Color.Red);
+                graphics.FillRectangle(Brushes.Red, x - 1, y - 1, 2, 2);
             }
         }
 

@@ -63,7 +63,7 @@
             this.imageTabControl = new System.Windows.Forms.TabControl();
             this.originalImageTabPage = new System.Windows.Forms.TabPage();
             this.originalPictureBox = new System.Windows.Forms.PictureBox();
-            this.reconstructedImagetabPage = new System.Windows.Forms.TabPage();
+            this.reconstructedImageTabPage = new System.Windows.Forms.TabPage();
             this.reconstructedPictureBox = new System.Windows.Forms.PictureBox();
             this.originalImageOpenFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.reconstructedImageSaveFileDialog = new System.Windows.Forms.SaveFileDialog();
@@ -85,7 +85,7 @@
             this.imageTabControl.SuspendLayout();
             this.originalImageTabPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.originalPictureBox)).BeginInit();
-            this.reconstructedImagetabPage.SuspendLayout();
+            this.reconstructedImageTabPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.reconstructedPictureBox)).BeginInit();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -115,6 +115,7 @@
             this.splitContainer1.Size = new System.Drawing.Size(869, 629);
             this.splitContainer1.SplitterDistance = 220;
             this.splitContainer1.TabIndex = 0;
+            this.splitContainer1.TabStop = false;
             // 
             // groupBox5
             // 
@@ -126,7 +127,7 @@
             this.groupBox5.Location = new System.Drawing.Point(3, 580);
             this.groupBox5.Name = "groupBox5";
             this.groupBox5.Size = new System.Drawing.Size(214, 46);
-            this.groupBox5.TabIndex = 13;
+            this.groupBox5.TabIndex = 0;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Viewing";
             // 
@@ -136,7 +137,7 @@
             this.label4.Location = new System.Drawing.Point(6, 21);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(60, 13);
-            this.label4.TabIndex = 12;
+            this.label4.TabIndex = 0;
             this.label4.Text = "Image size:";
             // 
             // imageSizeStretchButton
@@ -147,7 +148,7 @@
             this.imageSizeStretchButton.Margin = new System.Windows.Forms.Padding(0);
             this.imageSizeStretchButton.Name = "imageSizeStretchButton";
             this.imageSizeStretchButton.Size = new System.Drawing.Size(68, 23);
-            this.imageSizeStretchButton.TabIndex = 11;
+            this.imageSizeStretchButton.TabIndex = 20;
             this.imageSizeStretchButton.Text = "<->";
             this.imageSizeStretchButton.UseVisualStyleBackColor = true;
             this.imageSizeStretchButton.Click += new System.EventHandler(this.imageSizeStretchButton_Click);
@@ -159,7 +160,7 @@
             this.imageSizeOriginalButton.Margin = new System.Windows.Forms.Padding(0);
             this.imageSizeOriginalButton.Name = "imageSizeOriginalButton";
             this.imageSizeOriginalButton.Size = new System.Drawing.Size(68, 23);
-            this.imageSizeOriginalButton.TabIndex = 10;
+            this.imageSizeOriginalButton.TabIndex = 19;
             this.imageSizeOriginalButton.Text = "1:1";
             this.imageSizeOriginalButton.UseVisualStyleBackColor = true;
             this.imageSizeOriginalButton.Click += new System.EventHandler(this.imageSizeOriginalButton_Click);
@@ -176,7 +177,7 @@
             this.visualizationGroupBox.Location = new System.Drawing.Point(3, 284);
             this.visualizationGroupBox.Name = "visualizationGroupBox";
             this.visualizationGroupBox.Size = new System.Drawing.Size(214, 290);
-            this.visualizationGroupBox.TabIndex = 2;
+            this.visualizationGroupBox.TabIndex = 0;
             this.visualizationGroupBox.TabStop = false;
             this.visualizationGroupBox.Text = "Image reconstruction / visualization";
             // 
@@ -187,7 +188,7 @@
             this.reconstructImageButton.Location = new System.Drawing.Point(9, 230);
             this.reconstructImageButton.Name = "reconstructImageButton";
             this.reconstructImageButton.Size = new System.Drawing.Size(199, 23);
-            this.reconstructImageButton.TabIndex = 8;
+            this.reconstructImageButton.TabIndex = 17;
             this.reconstructImageButton.Text = "Reconstruct sampled image";
             this.reconstructImageButton.UseVisualStyleBackColor = true;
             this.reconstructImageButton.Click += new System.EventHandler(this.reconstructImageButton_Click);
@@ -206,7 +207,7 @@
             this.voronoiOptionsGroupBox.Location = new System.Drawing.Point(9, 46);
             this.voronoiOptionsGroupBox.Name = "voronoiOptionsGroupBox";
             this.voronoiOptionsGroupBox.Size = new System.Drawing.Size(199, 178);
-            this.voronoiOptionsGroupBox.TabIndex = 7;
+            this.voronoiOptionsGroupBox.TabIndex = 0;
             this.voronoiOptionsGroupBox.TabStop = false;
             this.voronoiOptionsGroupBox.Text = "Voronoi diagram options";
             // 
@@ -216,7 +217,7 @@
             this.cacheTriangulationCheckBox.Location = new System.Drawing.Point(6, 157);
             this.cacheTriangulationCheckBox.Name = "cacheTriangulationCheckBox";
             this.cacheTriangulationCheckBox.Size = new System.Drawing.Size(184, 17);
-            this.cacheTriangulationCheckBox.TabIndex = 1;
+            this.cacheTriangulationCheckBox.TabIndex = 16;
             this.cacheTriangulationCheckBox.Text = "Cache last Delaunay triangulation";
             this.cacheTriangulationCheckBox.UseVisualStyleBackColor = true;
             // 
@@ -228,7 +229,7 @@
             this.showVoronoiCellsCheckBox.Location = new System.Drawing.Point(6, 19);
             this.showVoronoiCellsCheckBox.Name = "showVoronoiCellsCheckBox";
             this.showVoronoiCellsCheckBox.Size = new System.Drawing.Size(116, 17);
-            this.showVoronoiCellsCheckBox.TabIndex = 0;
+            this.showVoronoiCellsCheckBox.TabIndex = 10;
             this.showVoronoiCellsCheckBox.Text = "Show Voronoi cells";
             this.showVoronoiCellsCheckBox.UseVisualStyleBackColor = true;
             // 
@@ -238,7 +239,7 @@
             this.showDelaunayTrianglesCheckBox.Location = new System.Drawing.Point(6, 42);
             this.showDelaunayTrianglesCheckBox.Name = "showDelaunayTrianglesCheckBox";
             this.showDelaunayTrianglesCheckBox.Size = new System.Drawing.Size(143, 17);
-            this.showDelaunayTrianglesCheckBox.TabIndex = 0;
+            this.showDelaunayTrianglesCheckBox.TabIndex = 11;
             this.showDelaunayTrianglesCheckBox.Text = "Show Delaunay triangles";
             this.showDelaunayTrianglesCheckBox.UseVisualStyleBackColor = true;
             // 
@@ -248,7 +249,7 @@
             this.enableAntialiasingCheckBox.Location = new System.Drawing.Point(6, 134);
             this.enableAntialiasingCheckBox.Name = "enableAntialiasingCheckBox";
             this.enableAntialiasingCheckBox.Size = new System.Drawing.Size(103, 17);
-            this.enableAntialiasingCheckBox.TabIndex = 0;
+            this.enableAntialiasingCheckBox.TabIndex = 15;
             this.enableAntialiasingCheckBox.Text = "Use anti-aliasing";
             this.enableAntialiasingCheckBox.UseVisualStyleBackColor = true;
             // 
@@ -258,7 +259,7 @@
             this.showVoronoiVerticesCheckBox.Location = new System.Drawing.Point(6, 65);
             this.showVoronoiVerticesCheckBox.Name = "showVoronoiVerticesCheckBox";
             this.showVoronoiVerticesCheckBox.Size = new System.Drawing.Size(132, 17);
-            this.showVoronoiVerticesCheckBox.TabIndex = 0;
+            this.showVoronoiVerticesCheckBox.TabIndex = 12;
             this.showVoronoiVerticesCheckBox.Text = "Show Voronoi vertices";
             this.showVoronoiVerticesCheckBox.UseVisualStyleBackColor = true;
             // 
@@ -268,7 +269,7 @@
             this.showVoronoiCellBordersCheckBox.Location = new System.Drawing.Point(6, 111);
             this.showVoronoiCellBordersCheckBox.Name = "showVoronoiCellBordersCheckBox";
             this.showVoronoiCellBordersCheckBox.Size = new System.Drawing.Size(166, 17);
-            this.showVoronoiCellBordersCheckBox.TabIndex = 0;
+            this.showVoronoiCellBordersCheckBox.TabIndex = 14;
             this.showVoronoiCellBordersCheckBox.Text = "Show borders of Voronoi cells";
             this.showVoronoiCellBordersCheckBox.UseVisualStyleBackColor = true;
             // 
@@ -278,7 +279,7 @@
             this.showDelaunayCircumcirclesCheckBox.Location = new System.Drawing.Point(6, 88);
             this.showDelaunayCircumcirclesCheckBox.Name = "showDelaunayCircumcirclesCheckBox";
             this.showDelaunayCircumcirclesCheckBox.Size = new System.Drawing.Size(165, 17);
-            this.showDelaunayCircumcirclesCheckBox.TabIndex = 0;
+            this.showDelaunayCircumcirclesCheckBox.TabIndex = 13;
             this.showDelaunayCircumcirclesCheckBox.Text = "Show Delaunay circumcircles";
             this.showDelaunayCircumcirclesCheckBox.UseVisualStyleBackColor = true;
             // 
@@ -288,7 +289,7 @@
             this.label3.Location = new System.Drawing.Point(9, 22);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(46, 13);
-            this.label3.TabIndex = 6;
+            this.label3.TabIndex = 0;
             this.label3.Text = "Method:";
             // 
             // sampleAndReconstructImageButton
@@ -298,7 +299,7 @@
             this.sampleAndReconstructImageButton.Location = new System.Drawing.Point(9, 259);
             this.sampleAndReconstructImageButton.Name = "sampleAndReconstructImageButton";
             this.sampleAndReconstructImageButton.Size = new System.Drawing.Size(199, 23);
-            this.sampleAndReconstructImageButton.TabIndex = 2;
+            this.sampleAndReconstructImageButton.TabIndex = 18;
             this.sampleAndReconstructImageButton.Text = "Sample and reconstruct image";
             this.sampleAndReconstructImageButton.UseVisualStyleBackColor = true;
             this.sampleAndReconstructImageButton.Click += new System.EventHandler(this.sampleAndReconstructImageButton_Click);
@@ -312,7 +313,7 @@
             this.imageVisualizerComboBox.Location = new System.Drawing.Point(61, 19);
             this.imageVisualizerComboBox.Name = "imageVisualizerComboBox";
             this.imageVisualizerComboBox.Size = new System.Drawing.Size(147, 21);
-            this.imageVisualizerComboBox.TabIndex = 5;
+            this.imageVisualizerComboBox.TabIndex = 9;
             this.imageVisualizerComboBox.SelectedIndexChanged += new System.EventHandler(this.imageVisualizerComboBox_SelectedIndexChanged);
             // 
             // samplingGroupBox
@@ -329,7 +330,7 @@
             this.samplingGroupBox.Location = new System.Drawing.Point(3, 147);
             this.samplingGroupBox.Name = "samplingGroupBox";
             this.samplingGroupBox.Size = new System.Drawing.Size(214, 131);
-            this.samplingGroupBox.TabIndex = 1;
+            this.samplingGroupBox.TabIndex = 0;
             this.samplingGroupBox.TabStop = false;
             this.samplingGroupBox.Text = "Image sampling";
             // 
@@ -339,7 +340,7 @@
             this.label5.Location = new System.Drawing.Point(9, 75);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(98, 13);
-            this.label5.TabIndex = 6;
+            this.label5.TabIndex = 0;
             this.label5.Text = "Number of clusters:";
             // 
             // samplingClusterCountNumeric
@@ -354,7 +355,7 @@
             0});
             this.samplingClusterCountNumeric.Name = "samplingClusterCountNumeric";
             this.samplingClusterCountNumeric.Size = new System.Drawing.Size(93, 20);
-            this.samplingClusterCountNumeric.TabIndex = 5;
+            this.samplingClusterCountNumeric.TabIndex = 7;
             this.samplingClusterCountNumeric.Value = new decimal(new int[] {
             10,
             0,
@@ -368,7 +369,7 @@
             this.label2.Location = new System.Drawing.Point(9, 23);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(46, 13);
-            this.label2.TabIndex = 4;
+            this.label2.TabIndex = 0;
             this.label2.Text = "Method:";
             // 
             // label1
@@ -377,7 +378,7 @@
             this.label1.Location = new System.Drawing.Point(9, 49);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(100, 13);
-            this.label1.TabIndex = 3;
+            this.label1.TabIndex = 0;
             this.label1.Text = "Number of samples:";
             // 
             // sampleCountNumeric
@@ -392,7 +393,7 @@
             0});
             this.sampleCountNumeric.Name = "sampleCountNumeric";
             this.sampleCountNumeric.Size = new System.Drawing.Size(93, 20);
-            this.sampleCountNumeric.TabIndex = 2;
+            this.sampleCountNumeric.TabIndex = 6;
             this.sampleCountNumeric.Value = new decimal(new int[] {
             1000,
             0,
@@ -406,7 +407,7 @@
             this.sampleImageButton.Location = new System.Drawing.Point(9, 99);
             this.sampleImageButton.Name = "sampleImageButton";
             this.sampleImageButton.Size = new System.Drawing.Size(199, 23);
-            this.sampleImageButton.TabIndex = 1;
+            this.sampleImageButton.TabIndex = 8;
             this.sampleImageButton.Text = "Sample image";
             this.sampleImageButton.UseVisualStyleBackColor = true;
             this.sampleImageButton.Click += new System.EventHandler(this.sampleImageButton_Click);
@@ -420,7 +421,7 @@
             this.samplerTypeComboBox.Location = new System.Drawing.Point(61, 20);
             this.samplerTypeComboBox.Name = "samplerTypeComboBox";
             this.samplerTypeComboBox.Size = new System.Drawing.Size(147, 21);
-            this.samplerTypeComboBox.TabIndex = 0;
+            this.samplerTypeComboBox.TabIndex = 5;
             this.samplerTypeComboBox.SelectedIndexChanged += new System.EventHandler(this.samplerTypeComboBox_SelectedIndexChanged);
             // 
             // groupBox1
@@ -445,7 +446,7 @@
             this.saveSampledImageButton.Location = new System.Drawing.Point(9, 106);
             this.saveSampledImageButton.Name = "saveSampledImageButton";
             this.saveSampledImageButton.Size = new System.Drawing.Size(199, 23);
-            this.saveSampledImageButton.TabIndex = 1;
+            this.saveSampledImageButton.TabIndex = 4;
             this.saveSampledImageButton.Text = "Save sampled image";
             this.saveSampledImageButton.UseVisualStyleBackColor = true;
             this.saveSampledImageButton.Click += new System.EventHandler(this.saveSampledImageButton_Click);
@@ -457,7 +458,7 @@
             this.saveButton.Location = new System.Drawing.Point(9, 48);
             this.saveButton.Name = "saveButton";
             this.saveButton.Size = new System.Drawing.Size(199, 23);
-            this.saveButton.TabIndex = 3;
+            this.saveButton.TabIndex = 2;
             this.saveButton.Text = "Save reconstructed image";
             this.saveButton.UseVisualStyleBackColor = true;
             this.saveButton.Click += new System.EventHandler(this.saveButton_Click);
@@ -469,7 +470,7 @@
             this.loadSampledImageButton.Location = new System.Drawing.Point(9, 77);
             this.loadSampledImageButton.Name = "loadSampledImageButton";
             this.loadSampledImageButton.Size = new System.Drawing.Size(199, 23);
-            this.loadSampledImageButton.TabIndex = 0;
+            this.loadSampledImageButton.TabIndex = 3;
             this.loadSampledImageButton.Text = "Load sampled image";
             this.loadSampledImageButton.UseVisualStyleBackColor = true;
             this.loadSampledImageButton.Click += new System.EventHandler(this.loadSampledImageButton_Click);
@@ -491,10 +492,11 @@
             this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.progressBar1.Location = new System.Drawing.Point(3, 603);
-            this.progressBar1.MarqueeAnimationSpeed = 10;
+            this.progressBar1.MarqueeAnimationSpeed = 1;
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(639, 23);
             this.progressBar1.TabIndex = 0;
+            this.progressBar1.TabStop = false;
             // 
             // imageTabControl
             // 
@@ -502,13 +504,13 @@
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.imageTabControl.Controls.Add(this.originalImageTabPage);
-            this.imageTabControl.Controls.Add(this.reconstructedImagetabPage);
+            this.imageTabControl.Controls.Add(this.reconstructedImageTabPage);
             this.imageTabControl.Location = new System.Drawing.Point(3, 3);
             this.imageTabControl.Name = "imageTabControl";
             this.imageTabControl.Padding = new System.Drawing.Point(0, 0);
             this.imageTabControl.SelectedIndex = 0;
             this.imageTabControl.Size = new System.Drawing.Size(639, 596);
-            this.imageTabControl.TabIndex = 0;
+            this.imageTabControl.TabIndex = 22;
             // 
             // originalImageTabPage
             // 
@@ -536,18 +538,18 @@
             this.originalPictureBox.TabIndex = 0;
             this.originalPictureBox.TabStop = false;
             // 
-            // reconstructedImagetabPage
+            // reconstructedImageTabPage
             // 
-            this.reconstructedImagetabPage.AutoScroll = true;
-            this.reconstructedImagetabPage.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.reconstructedImagetabPage.Controls.Add(this.reconstructedPictureBox);
-            this.reconstructedImagetabPage.Location = new System.Drawing.Point(4, 22);
-            this.reconstructedImagetabPage.Margin = new System.Windows.Forms.Padding(0);
-            this.reconstructedImagetabPage.Name = "reconstructedImagetabPage";
-            this.reconstructedImagetabPage.Size = new System.Drawing.Size(631, 570);
-            this.reconstructedImagetabPage.TabIndex = 1;
-            this.reconstructedImagetabPage.Text = "Reconstructed image";
-            this.reconstructedImagetabPage.Resize += new System.EventHandler(this.reconstructedImageTabPage_Resize);
+            this.reconstructedImageTabPage.AutoScroll = true;
+            this.reconstructedImageTabPage.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.reconstructedImageTabPage.Controls.Add(this.reconstructedPictureBox);
+            this.reconstructedImageTabPage.Location = new System.Drawing.Point(4, 22);
+            this.reconstructedImageTabPage.Margin = new System.Windows.Forms.Padding(0);
+            this.reconstructedImageTabPage.Name = "reconstructedImageTabPage";
+            this.reconstructedImageTabPage.Size = new System.Drawing.Size(631, 570);
+            this.reconstructedImageTabPage.TabIndex = 0;
+            this.reconstructedImageTabPage.Text = "Reconstructed image";
+            this.reconstructedImageTabPage.Resize += new System.EventHandler(this.reconstructedImageTabPage_Resize);
             // 
             // reconstructedPictureBox
             // 
@@ -633,8 +635,8 @@
             this.originalImageTabPage.ResumeLayout(false);
             this.originalImageTabPage.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.originalPictureBox)).EndInit();
-            this.reconstructedImagetabPage.ResumeLayout(false);
-            this.reconstructedImagetabPage.PerformLayout();
+            this.reconstructedImageTabPage.ResumeLayout(false);
+            this.reconstructedImageTabPage.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.reconstructedPictureBox)).EndInit();
             this.statusStrip.ResumeLayout(false);
             this.statusStrip.PerformLayout();
@@ -649,7 +651,7 @@
         private System.Windows.Forms.TabControl imageTabControl;
         private System.Windows.Forms.TabPage originalImageTabPage;
         private System.Windows.Forms.PictureBox originalPictureBox;
-        private System.Windows.Forms.TabPage reconstructedImagetabPage;
+        private System.Windows.Forms.TabPage reconstructedImageTabPage;
         private System.Windows.Forms.GroupBox samplingGroupBox;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.PictureBox reconstructedPictureBox;
