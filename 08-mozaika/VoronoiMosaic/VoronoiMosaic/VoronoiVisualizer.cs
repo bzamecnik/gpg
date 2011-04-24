@@ -40,13 +40,10 @@ namespace VoronoiMosaic
 
             // use cached triangulation if possible
             PointSet triMesh =
-                (TriangulationCachingEnabled && sampledImage.Equals(previousSampledImage)) ?            
-                    previousTriMesh :VoronoiHelper.MakeDelaunayTriangulation(sampledImage);
-            lock (this)
-            {
-                previousTriMesh = triMesh;
-                previousSampledImage = sampledImage;
-            }
+                (TriangulationCachingEnabled && sampledImage.Equals(previousSampledImage)) ?
+                    previousTriMesh : VoronoiHelper.MakeDelaunayTriangulation(sampledImage);
+            previousTriMesh = triMesh;
+            previousSampledImage = sampledImage;
 
             using (Graphics graphics = Graphics.FromImage(image))
             {
@@ -56,7 +53,7 @@ namespace VoronoiMosaic
                 graphics.SmoothingMode = AntiAliasingEnabled ?
                     System.Drawing.Drawing2D.SmoothingMode.AntiAlias :
                     System.Drawing.Drawing2D.SmoothingMode.None;
-                
+
                 if (VoronoiCellsEnabled)
                 {
                     DrawVoronoiCells(triMesh, graphics, sampledImage);
@@ -122,7 +119,8 @@ namespace VoronoiMosaic
                     //Color sampleColor = GetRandomColor();
                     ImageSample imageSample;
                     Color sampleColor = Color.Pink;  // DEBUG
-                    if (sampledImage.SampleMap.TryGetValue(new Point((int)triVertex.X,(int)triVertex.Y), out imageSample)) {
+                    if (sampledImage.SampleMap.TryGetValue(new Point((int)triVertex.X, (int)triVertex.Y), out imageSample))
+                    {
                         sampleColor = imageSample.color;
                     }
                     graphics.FillPolygon(new SolidBrush(sampleColor), voronoiCellPolygon);
@@ -138,19 +136,19 @@ namespace VoronoiMosaic
         {
             if (VoronoiVerticesEnabled || DelaunayCircumcirclesEnabled)
             {
-            foreach (DelaunayTriangle triangle in triMesh.Triangles)
-            {
+                foreach (DelaunayTriangle triangle in triMesh.Triangles)
+                {
 
-                Vector2 voronoiVertex = VoronoiHelper.GetCircumcenter(triangle);
-                if (VoronoiVerticesEnabled)
-                {
-                    DrawVoronoiVertex(width, height, voronoiVertex, graphics);
+                    Vector2 voronoiVertex = VoronoiHelper.GetCircumcenter(triangle);
+                    if (VoronoiVerticesEnabled)
+                    {
+                        DrawVoronoiVertex(width, height, voronoiVertex, graphics);
+                    }
+                    if (DelaunayCircumcirclesEnabled)
+                    {
+                        DrawDelaunayCircumcircles(triangle, voronoiVertex, graphics);
+                    }
                 }
-                if (DelaunayCircumcirclesEnabled)
-                {
-                    DrawDelaunayCircumcircles(triangle, voronoiVertex, graphics);
-                }
-            }
             }
         }
 

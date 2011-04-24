@@ -14,6 +14,12 @@ namespace VoronoiMosaic.GUI
     public partial class MosaicForm : Form
     {
         Bitmap originalImage;
+        /// <summary>
+        /// A separate original images are needed for processing and showing
+        /// within a picture box in order to prevent from concurrent access
+        /// from multiple threads.
+        /// </summary>
+        Bitmap originalImageToShow;
         SampledImage sampledImage;
         Bitmap reconstructedImage;
         
@@ -175,7 +181,12 @@ namespace VoronoiMosaic.GUI
                 originalImage.Dispose();
             }
             originalImage = (Bitmap)Bitmap.FromFile(originalImageOpenFileDialog.FileName);
-            SetPictureBoxImage(originalPictureBox, originalImage);
+            if (originalImageToShow != null)
+            {
+                originalImageToShow.Dispose();
+            }
+            originalImageToShow = (Bitmap)Bitmap.FromFile(originalImageOpenFileDialog.FileName);
+            SetPictureBoxImage(originalPictureBox, originalImageToShow);
             imageTabControl.SelectedIndex = 0;
         }
 
