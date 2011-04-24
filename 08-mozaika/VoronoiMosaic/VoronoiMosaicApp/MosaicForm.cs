@@ -76,7 +76,12 @@ namespace VoronoiMosaic.GUI
             {
                 return;
             }
-            sampledImage = imageSampler.SampleImage(originalImage, (int)sampleCountNumeric.Value);
+            if (!samplingBackgroundWorker.IsBusy)
+            {
+                sampleImageButton.Enabled = false;
+                samplingBackgroundWorker.RunWorkerAsync(new SamplingWorkerArguments(
+                    originalImage, (int)sampleCountNumeric.Value));
+            }
         }
 
         private void ReconstructImage()
@@ -313,6 +318,42 @@ namespace VoronoiMosaic.GUI
                     break;
                 default:
                     throw new NotImplementedException();
+            }
+        }
+
+        private void visualizingBackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+           
+        }
+
+        
+
+        private void visualizingBackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            
+        }
+
+        private void samplingBackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            SamplingWorkerArguments args = (SamplingWorkerArguments)e.Argument;
+            e.Result = imageSampler.SampleImage(args.image, args.sampleCount);
+        }
+
+        private void samplingBackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            sampledImage = (SampledImage)e.Result;
+            sampleImageButton.Enabled = true;
+        }
+
+        class SamplingWorkerArguments
+        {
+            public Bitmap image;
+            public int sampleCount;
+
+            public SamplingWorkerArguments(Bitmap image, int sampleCount)
+            {
+                this.image = image;
+                this.sampleCount = sampleCount;
             }
         }
     }

@@ -67,6 +67,8 @@
             this.sampledImageOpenFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.sampledImageSaveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.cacheTriangulationCheckBox = new System.Windows.Forms.CheckBox();
+            this.samplingBackgroundWorker = new System.ComponentModel.BackgroundWorker();
+            this.visualizingBackgroundWorker = new System.ComponentModel.BackgroundWorker();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
@@ -549,6 +551,16 @@
             this.cacheTriangulationCheckBox.Text = "Cache last Delaunay triangulation";
             this.cacheTriangulationCheckBox.UseVisualStyleBackColor = true;
             // 
+            // samplingBackgroundWorker
+            // 
+            this.samplingBackgroundWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.samplingBackgroundWorker_DoWork);
+            this.samplingBackgroundWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.samplingBackgroundWorker_RunWorkerCompleted);
+            // 
+            // visualizingBackgroundWorker
+            // 
+            this.visualizingBackgroundWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.visualizingBackgroundWorker_DoWork);
+            this.visualizingBackgroundWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.visualizingBackgroundWorker_RunWorkerCompleted);
+            // 
             // MosaicForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -622,6 +634,8 @@
         private System.Windows.Forms.OpenFileDialog sampledImageOpenFileDialog;
         private System.Windows.Forms.SaveFileDialog sampledImageSaveFileDialog;
         private System.Windows.Forms.CheckBox cacheTriangulationCheckBox;
+        private System.ComponentModel.BackgroundWorker samplingBackgroundWorker;
+        private System.ComponentModel.BackgroundWorker visualizingBackgroundWorker;
     }
 }
 
