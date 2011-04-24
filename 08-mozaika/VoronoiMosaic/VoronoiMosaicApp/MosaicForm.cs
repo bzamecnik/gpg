@@ -442,6 +442,7 @@ namespace VoronoiMosaic.GUI
                 reconstructionTime = reconstructionProgress.TimeReport["visualizer"];
             }
             sb.AppendFormat(", Visualization: {0} ms", reconstructionTime);
+            sb.AppendFormat(", Total: {0} ms", samplingTime + delaunayTime + reconstructionTime);
             timeToolStripStatusLabel.Text = sb.ToString();
             samplingProgress.TimeReport.Clear();
             reconstructionProgress.TimeReport.Clear();
