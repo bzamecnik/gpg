@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using OpenTK;
 using Poly2Tri;
 
@@ -21,6 +21,8 @@ namespace VoronoiMosaic
 
         private Random random = new Random();
 
+        private VoronoiHelper voronoiHelper;
+
         private SampledImage previousSampledImage;
         /// <summary>
         /// Cached Delaunay triangulation of the previously sampled image.
@@ -37,6 +39,7 @@ namespace VoronoiMosaic
             VoronoiCellsEnabled = true;
             TriangulationCachingEnabled = true;
             Progress = progress;
+            voronoiHelper = new VoronoiHelper(progress);
         }
 
         public Bitmap ReconstructImage(SampledImage sampledImage)
@@ -47,14 +50,23 @@ namespace VoronoiMosaic
 
             Progress.ReportProgress(0);
 
+            Stopwatch stopwatch = Stopwatch.StartNew();
+
             // use cached triangulation if possible
             PointSet triMesh =
                 (TriangulationCachingEnabled && sampledImage.Equals(previousSampledImage)) ?
-                    previousTriMesh : VoronoiHelper.MakeDelaunayTriangulation(sampledImage);
+                    previousTriMesh : voronoiHelper.MakeDelaunayTriangulation(sampledImage);
+
+            stopwatch.Stop();
+            Progress.TimeReport["delaunay"] = stopwatch.ElapsedMilliseconds;
+
             previousTriMesh = triMesh;
             previousSampledImage = sampledImage;
 
             Progress.ReportProgress(25);
+
+            stopwatch.Reset();
+            stopwatch.Start();
 
             using (Graphics graphics = Graphics.FromImage(image))
             {
@@ -83,6 +95,7 @@ namespace VoronoiMosaic
 
                 Progress.ReportProgress(100);
             }
+            Progress.TimeReport["visualizer"] = stopwatch.ElapsedMilliseconds;
 
             return image;
         }
@@ -98,7 +111,6 @@ namespace VoronoiMosaic
                 // draw Delaunay triangulation
                 PointF[] points = triangle.ToPointFArray();
                 graphics.DrawPolygon(Pens.Black, points);
-                //graphics.FillPolygon(new Brush(), points);
 
                 trianglesDone++;
                 if ((samplePercent > 500) && (trianglesDone % samplePercent == 0))
@@ -145,8 +157,6 @@ namespace VoronoiMosaic
                         (DelaunayTriangle tri) => VoronoiHelper.GetCircumcenter(tri));
                     PointF[] voronoiCellPolygon = voronoiCellVertices.Select(
                         (Vector2 vertex) => vertex.ToPointF()).ToArray();
-                    // TODO: use the color from the image sample corresponding
-                    // to the current triangle vertex
 
                     //Color sampleColor = GetRandomColor();
                     ImageSample imageSample;

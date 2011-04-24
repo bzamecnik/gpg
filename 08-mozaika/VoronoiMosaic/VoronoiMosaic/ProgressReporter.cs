@@ -11,6 +11,14 @@ namespace VoronoiMosaic
 
         public event ProgressChangedEventHandler ProgressChanged;
 
+        // time: component -> milliseconds
+        public Dictionary<string, long> TimeReport { get; set; }
+
+        public ProgressReporter()
+        {
+            TimeReport = new Dictionary<string, long>();
+        }
+
         public void ReportProgress(int progressPercentage)
         {
             if ((progressPercentage < 0) || ( progressPercentage > 100)) {

@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Threading;
+using System.Text;
 using System.Windows.Forms;
 
 namespace VoronoiMosaic.GUI
@@ -416,6 +416,34 @@ namespace VoronoiMosaic.GUI
                 imageTabControl.SelectedIndex = 1;
             }
             SetControlsEnabled(true);
+            UpdateTimeToStatusBar();
+        }
+
+        private void UpdateTimeToStatusBar()
+        {
+            StringBuilder sb = new StringBuilder();
+            long samplingTime = 0;
+            if (samplingProgress.TimeReport.ContainsKey("sampler"))
+            {
+                samplingTime = samplingProgress.TimeReport["sampler"];
+                
+            }
+            sb.AppendFormat("Sampler: {0} ms", samplingTime);
+            long delaunayTime = 0;
+            if (reconstructionProgress.TimeReport.ContainsKey("delaunay"))
+            {
+                delaunayTime = reconstructionProgress.TimeReport["delaunay"];
+            }
+            sb.AppendFormat(", Delaunay triangulation: {0} ms", delaunayTime);
+            long reconstructionTime = 0;
+            if (reconstructionProgress.TimeReport.ContainsKey("visualizer"))
+            {
+                reconstructionTime = reconstructionProgress.TimeReport["visualizer"];
+            }
+            sb.AppendFormat(", Visualization: {0} ms", reconstructionTime);
+            timeToolStripStatusLabel.Text = sb.ToString();
+            samplingProgress.TimeReport.Clear();
+            reconstructionProgress.TimeReport.Clear();
         }
 
         private void backgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)

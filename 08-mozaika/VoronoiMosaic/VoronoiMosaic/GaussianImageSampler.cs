@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 
 namespace VoronoiMosaic
 {
@@ -52,6 +50,7 @@ namespace VoronoiMosaic
             // NOTE: some random position candidates may go outside the image
             // and thus are do not contribute as the real image samples
             int maxIterations = 10 * sampleCount;
+            Stopwatch stopwatch = Stopwatch.StartNew();
             for (int i = 0; (sampledImage.Samples.Count < sampleCount) && (i < maxIterations); i++)
             {
                 double xGauss, yGauss;
@@ -70,6 +69,7 @@ namespace VoronoiMosaic
                     Progress.ReportProgress(percentDone);
                 }
             }
+            Progress.TimeReport["sampler"] = stopwatch.ElapsedMilliseconds;
 
             Progress.ReportProgress(100);
 

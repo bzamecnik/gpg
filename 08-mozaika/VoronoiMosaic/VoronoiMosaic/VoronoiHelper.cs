@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using OpenTK;
 using Poly2Tri;
 
@@ -11,7 +8,14 @@ namespace VoronoiMosaic
 {
     class VoronoiHelper
     {
-        public static PointSet MakeDelaunayTriangulation(SampledImage sampledImage)
+        private ProgressReporter progress;
+
+        public VoronoiHelper(ProgressReporter progress)
+        {
+            this.progress = progress;
+        }
+
+        public PointSet MakeDelaunayTriangulation(SampledImage sampledImage)
         {
             List<TriangulationPoint> points = new List<TriangulationPoint>();
             foreach (ImageSample sample in sampledImage.Samples)
@@ -32,19 +36,17 @@ namespace VoronoiMosaic
             return MakeDelaunayTriangulation(points);
         }
 
-        public static PointSet MakeDelaunayTriangulation(List<TriangulationPoint> points)
+        public PointSet MakeDelaunayTriangulation(List<TriangulationPoint> points)
         {
             PointSet polygon = new PointSet(points);
             try
             {
-                Stopwatch stopwatch = new Stopwatch();
-                stopwatch.Reset();
-                stopwatch.Start();
+                Stopwatch stopwatch = Stopwatch.StartNew();
 
                 P2T.Triangulate(polygon);
 
                 stopwatch.Stop();
-                Console.WriteLine("Delaunay triangulation - elapsed time: {0} ms", stopwatch.ElapsedMilliseconds);
+                progress.TimeReport["delaunay"] = stopwatch.ElapsedMilliseconds;
             }
             catch (NotImplementedException ex)
             {

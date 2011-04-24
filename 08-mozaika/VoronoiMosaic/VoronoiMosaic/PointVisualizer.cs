@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 
 namespace VoronoiMosaic
 {
@@ -24,6 +21,9 @@ namespace VoronoiMosaic
         {
             int width = sampledImage.Width;
             int height = sampledImage.Height;
+
+            Stopwatch stopwatch = Stopwatch.StartNew();
+            
             Bitmap image = new Bitmap(width, height);
 
             // fill with black background
@@ -49,6 +49,8 @@ namespace VoronoiMosaic
                     Progress.ReportProgress(percentDone);
                 }
             }
+
+            Progress.TimeReport["visualizer"] = stopwatch.ElapsedMilliseconds;
 
             Progress.ReportProgress(100);
 

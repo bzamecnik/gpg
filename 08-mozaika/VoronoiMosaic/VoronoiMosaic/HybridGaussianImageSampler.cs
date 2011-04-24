@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 
 namespace VoronoiMosaic
 {
@@ -60,6 +58,7 @@ namespace VoronoiMosaic
             // and thus are do not contribute as the real image samples
             int samplesPerCluster = sampleCount / ClusterCount;
             int targetSampleCount = sampleCount % ClusterCount;
+            Stopwatch stopwatch = Stopwatch.StartNew();
             for (int cluster = 0; cluster < ClusterCount; cluster++)
             {
                 targetSampleCount += samplesPerCluster;
@@ -91,6 +90,7 @@ namespace VoronoiMosaic
                     }
                 }
             }
+            Progress.TimeReport["sampler"] = stopwatch.ElapsedMilliseconds;
 
             Progress.ReportProgress(100);
 

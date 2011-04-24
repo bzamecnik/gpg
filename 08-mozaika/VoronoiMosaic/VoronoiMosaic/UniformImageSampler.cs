@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 
 namespace VoronoiMosaic
 {
@@ -39,6 +37,8 @@ namespace VoronoiMosaic
             int samplePercent = sampleCount / 100;
             int percentDone = 0;
             int maxIterations = 10 * sampleCount;
+
+            Stopwatch stopwatch = Stopwatch.StartNew();
             for (int i = 0; (sampledImage.Samples.Count < sampleCount) && (i < maxIterations); i++)
             {
                 int x = random.Next(0, width - 1);
@@ -52,6 +52,8 @@ namespace VoronoiMosaic
                     Progress.ReportProgress(percentDone);
                 }
             }
+            stopwatch.Stop();
+            Progress.TimeReport["sampler"] = stopwatch.ElapsedMilliseconds;
 
             Progress.ReportProgress(100);
 

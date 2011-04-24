@@ -47,6 +47,8 @@
             this.sampleAndReconstructImageButton = new System.Windows.Forms.Button();
             this.imageVisualizerComboBox = new System.Windows.Forms.ComboBox();
             this.samplingGroupBox = new System.Windows.Forms.GroupBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.samplingClusterCountNumeric = new System.Windows.Forms.NumericUpDown();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.sampleCountNumeric = new System.Windows.Forms.NumericUpDown();
@@ -69,8 +71,7 @@
             this.sampledImageSaveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.backgroundWorker = new System.ComponentModel.BackgroundWorker();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
-            this.label5 = new System.Windows.Forms.Label();
-            this.samplingClusterCountNumeric = new System.Windows.Forms.NumericUpDown();
+            this.timeToolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
@@ -78,6 +79,7 @@
             this.visualizationGroupBox.SuspendLayout();
             this.voronoiOptionsGroupBox.SuspendLayout();
             this.samplingGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.samplingClusterCountNumeric)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.sampleCountNumeric)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.imageTabControl.SuspendLayout();
@@ -85,7 +87,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.originalPictureBox)).BeginInit();
             this.reconstructedImagetabPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.reconstructedPictureBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.samplingClusterCountNumeric)).BeginInit();
+            this.statusStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // splitContainer1
@@ -331,6 +333,35 @@
             this.samplingGroupBox.TabStop = false;
             this.samplingGroupBox.Text = "Image sampling";
             // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(9, 75);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(98, 13);
+            this.label5.TabIndex = 6;
+            this.label5.Text = "Number of clusters:";
+            // 
+            // samplingClusterCountNumeric
+            // 
+            this.samplingClusterCountNumeric.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.samplingClusterCountNumeric.Location = new System.Drawing.Point(115, 73);
+            this.samplingClusterCountNumeric.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.samplingClusterCountNumeric.Name = "samplingClusterCountNumeric";
+            this.samplingClusterCountNumeric.Size = new System.Drawing.Size(93, 20);
+            this.samplingClusterCountNumeric.TabIndex = 5;
+            this.samplingClusterCountNumeric.Value = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.samplingClusterCountNumeric.ValueChanged += new System.EventHandler(this.samplingClusterCountNumeric_ValueChanged);
+            // 
             // label2
             // 
             this.label2.AutoSize = true;
@@ -513,7 +544,7 @@
             this.reconstructedImagetabPage.Location = new System.Drawing.Point(4, 22);
             this.reconstructedImagetabPage.Margin = new System.Windows.Forms.Padding(0);
             this.reconstructedImagetabPage.Name = "reconstructedImagetabPage";
-            this.reconstructedImagetabPage.Size = new System.Drawing.Size(631, 540);
+            this.reconstructedImagetabPage.Size = new System.Drawing.Size(631, 570);
             this.reconstructedImagetabPage.TabIndex = 1;
             this.reconstructedImagetabPage.Text = "Reconstructed image";
             this.reconstructedImagetabPage.Resize += new System.EventHandler(this.reconstructedImageTabPage_Resize);
@@ -523,7 +554,7 @@
             this.reconstructedPictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.reconstructedPictureBox.Location = new System.Drawing.Point(0, 0);
             this.reconstructedPictureBox.Name = "reconstructedPictureBox";
-            this.reconstructedPictureBox.Size = new System.Drawing.Size(629, 538);
+            this.reconstructedPictureBox.Size = new System.Drawing.Size(629, 568);
             this.reconstructedPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
             this.reconstructedPictureBox.TabIndex = 0;
             this.reconstructedPictureBox.TabStop = false;
@@ -562,39 +593,18 @@
             // 
             // statusStrip
             // 
+            this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.timeToolStripStatusLabel});
             this.statusStrip.Location = new System.Drawing.Point(0, 632);
             this.statusStrip.Name = "statusStrip";
             this.statusStrip.Size = new System.Drawing.Size(869, 22);
             this.statusStrip.TabIndex = 0;
             // 
-            // label5
+            // timeToolStripStatusLabel
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(9, 75);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(98, 13);
-            this.label5.TabIndex = 6;
-            this.label5.Text = "Number of clusters:";
-            // 
-            // samplingClusterCountNumeric
-            // 
-            this.samplingClusterCountNumeric.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.samplingClusterCountNumeric.Location = new System.Drawing.Point(115, 73);
-            this.samplingClusterCountNumeric.Maximum = new decimal(new int[] {
-            10000,
-            0,
-            0,
-            0});
-            this.samplingClusterCountNumeric.Name = "samplingClusterCountNumeric";
-            this.samplingClusterCountNumeric.Size = new System.Drawing.Size(93, 20);
-            this.samplingClusterCountNumeric.TabIndex = 5;
-            this.samplingClusterCountNumeric.Value = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.samplingClusterCountNumeric.ValueChanged += new System.EventHandler(this.samplingClusterCountNumeric_ValueChanged);
+            this.timeToolStripStatusLabel.Name = "timeToolStripStatusLabel";
+            this.timeToolStripStatusLabel.Size = new System.Drawing.Size(42, 17);
+            this.timeToolStripStatusLabel.Text = "Ready.";
             // 
             // MosaicForm
             // 
@@ -616,6 +626,7 @@
             this.voronoiOptionsGroupBox.PerformLayout();
             this.samplingGroupBox.ResumeLayout(false);
             this.samplingGroupBox.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.samplingClusterCountNumeric)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.sampleCountNumeric)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.imageTabControl.ResumeLayout(false);
@@ -625,7 +636,8 @@
             this.reconstructedImagetabPage.ResumeLayout(false);
             this.reconstructedImagetabPage.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.reconstructedPictureBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.samplingClusterCountNumeric)).EndInit();
+            this.statusStrip.ResumeLayout(false);
+            this.statusStrip.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -676,6 +688,7 @@
         private System.Windows.Forms.StatusStrip statusStrip;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.NumericUpDown samplingClusterCountNumeric;
+        private System.Windows.Forms.ToolStripStatusLabel timeToolStripStatusLabel;
     }
 }
 
