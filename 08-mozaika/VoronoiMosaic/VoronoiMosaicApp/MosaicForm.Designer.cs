@@ -616,7 +616,8 @@
             this.Controls.Add(this.statusStrip);
             this.Controls.Add(this.splitContainer1);
             this.Name = "MosaicForm";
-            this.Text = "Voronoi mosaic - Bohumír Zámečník - MFF UK - 2011 - uses poly2tri-cs library";
+            this.Text = "Voronoi mosaic - Bohumír Zámečník - MFF UK - 2011 - uses poly2tri-cs library for " +
+                "Delaunay triangulation";
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             this.splitContainer1.ResumeLayout(false);
