@@ -38,10 +38,11 @@ namespace VoronoiMosaic.GUI
         {
             InitializeComponent();
 
-            uniformSampler = new UniformImageSampler(samplingProgress);
-            gaussianSampler = new GaussianImageSampler(samplingProgress);
-            hybridGaussianSampler = new HybridGaussianImageSampler(samplingProgress)
+            uniformSampler = new UniformImageSampler() { Progress = samplingProgress };
+            gaussianSampler = new GaussianImageSampler() { Progress = samplingProgress };
+            hybridGaussianSampler = new HybridGaussianImageSampler()
             {
+                Progress = samplingProgress,
                 ClusterCount = 10
             };
 

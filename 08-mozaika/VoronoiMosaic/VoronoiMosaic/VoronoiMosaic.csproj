@@ -50,6 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AbstractImageSampler.cs" />
     <Compile Include="ConversionExtensions.cs" />
     <Compile Include="HybridGaussianImageSampler.cs" />
     <Compile Include="GaussianDistribution2D.cs" />
