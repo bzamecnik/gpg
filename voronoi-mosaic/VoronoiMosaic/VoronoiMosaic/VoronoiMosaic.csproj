@@ -37,6 +37,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Lib\ThirdParty\OpenTK-1.0\OpenTK.dll</HintPath>
     </Reference>
+    <Reference Include="Poly2Tri, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Lib\ThirdParty\poly2tri-cs\Poly2Tri.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -67,12 +71,6 @@
     <Compile Include="UniformImageSampler.cs" />
     <Compile Include="VoronoiVisualizer.cs" />
     <Compile Include="VoronoiHelper.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\..\poly2tri-cs\Poly2Tri.csproj">
-      <Project>{C5E5802D-6A45-4FE9-BAE7-5F0AE91D72C1}</Project>
-      <Name>Poly2Tri</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
